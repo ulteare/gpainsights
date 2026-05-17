@@ -96,7 +96,7 @@ const GPATracker = () => {
       fill: false,
       borderColor: '#6B4E2A',
       borderWidth: 2.5,
-      tension: 0.35,
+      tension: 0,
       pointBackgroundColor: data.map(d => exchangeSems.has(d.sem) ? '#ebe7e2' : '#6B4E2A'),
       pointBorderColor: data.map(d => exchangeSems.has(d.sem) ? '#6B4E2A' : '#6B4E2A'),
       pointBorderWidth: data.map(d => exchangeSems.has(d.sem) ? 2.5 : 0),
