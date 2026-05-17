@@ -39,16 +39,19 @@ Stores semester-level GPA data for each user.
 | `gpa` | DECIMAL | Cumulative GPA value (0.0 - 5.0) |
 | `note` | TEXT | Optional note (e.g., "Exchange / Internship") |
 | `is_special` | BOOLEAN | Flag for exchange/internship semesters |
+| `sequence_order` | INTEGER | Display order (1 = first semester, 2 = second, etc.) |
 | `created_at` | TIMESTAMP | Record creation timestamp |
 | `updated_at` | TIMESTAMP | Last update timestamp (auto-updated) |
 
 **Constraints:**
 - `gpa` must be between 0.0 and 5.0
 - Unique constraint on (`user_id`, `semester_code`) - prevents duplicate semesters
+- Unique constraint on (`user_id`, `sequence_order`) - ensures unique ordering per user
 - Cascade delete on user deletion
 
 **Indexes:**
 - `idx_semesters_user_id` on `user_id` for faster queries
+- `idx_semesters_sequence` on (`user_id`, `sequence_order`) for ordered queries
 
 #### `user_settings`
 Stores user preferences and settings.
