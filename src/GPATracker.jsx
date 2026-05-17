@@ -39,6 +39,27 @@ const GPATracker = () => {
 
   const exchangeSems = new Set(['3.1', '3.2']);
 
+  // Calculate dynamic y-axis range
+  const gpas = data.map(d => d.gpa);
+  const minGpa = Math.min(...gpas);
+  const maxGpa = Math.max(...gpas);
+
+  // Calculate y-axis min/max with 0.1 padding, but respect 0.0-4.0 bounds
+  const yMin = Math.max(0.0, Math.floor((minGpa - 0.1) * 10) / 10);
+  const yMax = Math.min(4.0, Math.ceil((maxGpa + 0.1) * 10) / 10);
+
+  // Calculate stats for display
+  const startingGpa = data[0].gpa;
+  const currentGpa = data[data.length - 1].gpa;
+  const growth = currentGpa - startingGpa;
+  const startingLabel = data[0].label;
+  const currentLabel = data[data.length - 1].label;
+
+  // Calculate time span
+  const startYear = parseInt(data[0].sem.split('.')[0]);
+  const endYear = parseInt(data[data.length - 1].sem.split('.')[0]);
+  const yearSpan = endYear - startYear + 1;
+
   const bands = [
     { label: 'Peak 🏔️', min: 3.90, max: 4.00, fill: 'rgba(62,35,10,0.38)', labelColor: '#FAF8F5', fontWeight: 500 },
     { label: 'Summa Cum Laude 🥇', min: 3.80, max: 3.90, fill: 'rgba(95,58,18,0.28)', labelColor: '#FAF8F5', fontWeight: 500 },
@@ -53,7 +74,6 @@ const GPATracker = () => {
     id: 'bandPlugin',
     beforeDatasetsDraw(chart) {
       const { ctx, chartArea: { left, right }, scales: { y } } = chart;
-      const yMin = 3.5, yMax = 4.0;
       bands.forEach(band => {
         const bMin = Math.max(band.min, yMin);
         const bMax = Math.min(band.max, yMax);
@@ -68,7 +88,6 @@ const GPATracker = () => {
     },
     afterDatasetsDraw(chart) {
       const { ctx, chartArea: { left, right }, scales: { y } } = chart;
-      const yMin = 3.5, yMax = 4.0;
       ctx.save();
       bands.forEach(band => {
         const bMin = Math.max(band.min, yMin);
@@ -150,8 +169,8 @@ const GPATracker = () => {
         offset: true
       },
       y: {
-        min: 3.5,
-        max: 4.0,
+        min: yMin,
+        max: yMax,
         grid: { color: 'rgba(200,170,136,0.18)', drawTicks: false },
         border: { color: '#E0D6C8', width: 1, dash: [4, 4] },
         ticks: {
@@ -179,18 +198,18 @@ const GPATracker = () => {
       <div className={styles.statsRow}>
         <div className={styles.statCard}>
           <div className={styles.label}>Starting GPA</div>
-          <div className={styles.value}>3.62</div>
-          <div className={styles.sub}>Year 1, Sem 1</div>
+          <div className={styles.value}>{startingGpa.toFixed(2)}</div>
+          <div className={styles.sub}>{startingLabel}</div>
         </div>
         <div className={styles.statCard}>
           <div className={styles.label}>Current GPA</div>
-          <div className={styles.value}>3.94</div>
-          <div className={styles.sub}>Year 4, Sem 2</div>
+          <div className={styles.value}>{currentGpa.toFixed(2)}</div>
+          <div className={styles.sub}>{currentLabel}</div>
         </div>
         <div className={styles.statCard}>
           <div className={styles.label}>Growth</div>
-          <div className={styles.value}>+0.32</div>
-          <div className={styles.sub}>Over 4 years</div>
+          <div className={styles.value}>{growth >= 0 ? '+' : ''}{growth.toFixed(2)}</div>
+          <div className={styles.sub}>Over {yearSpan} {yearSpan === 1 ? 'year' : 'years'}</div>
         </div>
       </div>
       <div className={styles.chartCanvasWrap}>
