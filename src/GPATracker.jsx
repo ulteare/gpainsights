@@ -146,7 +146,8 @@ const GPATracker = () => {
       x: {
         grid: { color: 'rgba(200,170,136,0.15)', drawTicks: false },
         border: { color: '#E0D6C8', width: 1 },
-        ticks: { color: '#8C7B68', font: { family: "'Jost', sans-serif", size: 12 }, padding: 8 }
+        ticks: { color: '#8C7B68', font: { family: "'Jost', sans-serif", size: 12 }, padding: 8 },
+        offset: true
       },
       y: {
         min: 3.5,
