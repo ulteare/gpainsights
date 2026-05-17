@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/ulteare/gpainsights#readme",
   "dependencies": {
+    "@supabase/supabase-js": "^2.105.4",
     "chart.js": "^4.5.1",
     "react": "^19.2.6",
     "react-chartjs-2": "^5.3.1",
