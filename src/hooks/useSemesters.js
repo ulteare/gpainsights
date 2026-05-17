@@ -1,0 +1,52 @@
+import { useState, useEffect } from 'react';
+import { supabase } from '../supabaseClient';
+import { useAuth } from '../contexts/AuthContext';
+
+export const useSemesters = () => {
+  const { user } = useAuth();
+  const [semesters, setSemesters] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!user) {
+      setSemesters([]);
+      setLoading(false);
+      return;
+    }
+
+    fetchSemesters();
+  }, [user]);
+
+  const fetchSemesters = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const { data, error: fetchError } = await supabase
+        .from('semesters')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('sequence_order', { ascending: true });
+
+      if (fetchError) throw fetchError;
+
+      // Transform data to match GPATracker format
+      const transformedData = data.map(semester => ({
+        sem: semester.semester_code,
+        label: semester.semester_label,
+        gpa: semester.gpa,
+        note: semester.note || '',
+      }));
+
+      setSemesters(transformedData);
+    } catch (err) {
+      console.error('Error fetching semesters:', err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { semesters, loading, error, refetch: fetchSemesters };
+};

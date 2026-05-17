@@ -14,6 +14,9 @@ const Dashboard = () => {
     }
   };
 
+  // Debug: Log user data to console
+  console.log('Current user:', user);
+
   return (
     <div className={styles.dashboardContainer}>
       <header className={styles.header}>

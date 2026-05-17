@@ -10,6 +10,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import { useSemesters } from './hooks/useSemesters';
 import styles from './GPATracker.module.css';
 
 // Register ChartJS components
@@ -25,19 +26,49 @@ ChartJS.register(
 
 const GPATracker = () => {
   const chartRef = useRef(null);
+  const { semesters: data, loading, error } = useSemesters();
 
-  const data = [
-    { sem: '1.1', label: 'Y1 S1', gpa: 3.62, note: '' },
-    { sem: '1.2', label: 'Y1 S2', gpa: 3.77, note: '' },
-    { sem: '2.1', label: 'Y2 S1', gpa: 3.8357, note: '' },
-    { sem: '2.2', label: 'Y2 S2', gpa: 3.8579, note: '' },
-    { sem: '3.1', label: 'Y3 S1', gpa: 3.8579, note: 'Exchange / Internship' },
-    { sem: '3.2', label: 'Y3 S2', gpa: 3.8579, note: 'Exchange / Internship' },
-    { sem: '4.1', label: 'Y4 S1', gpa: 3.9045, note: '' },
-    { sem: '4.2', label: 'Y4 S2', gpa: 3.9423, note: '' },
-  ];
+  // If loading or error, show appropriate state
+  if (loading) {
+    return (
+      <div className={styles.wrap}>
+        <div style={{ padding: '2rem', textAlign: 'center', color: '#8C7B68' }}>
+          Loading your GPA data...
+        </div>
+      </div>
+    );
+  }
 
-  const exchangeSems = new Set(['3.1', '3.2']);
+  if (error) {
+    return (
+      <div className={styles.wrap}>
+        <div style={{ padding: '2rem', textAlign: 'center', color: '#C33' }}>
+          Error loading data: {error}
+        </div>
+      </div>
+    );
+  }
+
+  if (!data || data.length === 0) {
+    return (
+      <div className={styles.wrap}>
+        <div style={{ padding: '2rem', textAlign: 'center' }}>
+          <h2 style={{ fontFamily: "'Playfair Display', serif", color: '#2C2417', marginBottom: '1rem' }}>
+            No Semester Data Yet
+          </h2>
+          <p style={{ fontFamily: "'Jost', sans-serif", color: '#8C7B68' }}>
+            Add your first semester to start tracking your GPA progress!
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Determine which semesters are special (exchange/internship)
+  const exchangeSems = new Set(
+    data.filter(d => d.note && d.note.toLowerCase().includes('exchange') || d.note.toLowerCase().includes('internship'))
+      .map(d => d.sem)
+  );
 
   // Calculate dynamic y-axis range
   const gpas = data.map(d => d.gpa);
