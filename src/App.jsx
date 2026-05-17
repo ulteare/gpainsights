@@ -1,12 +1,35 @@
 import React from 'react';
-import GPATracker from './GPATracker';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import Login from './components/Login';
+import Dashboard from './components/Dashboard';
 import './App.css';
+
+function AppContent() {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '100vh',
+        fontFamily: "'Jost', sans-serif",
+        color: '#8C7B68'
+      }}>
+        Loading...
+      </div>
+    );
+  }
+
+  return user ? <Dashboard /> : <Login />;
+}
 
 function App() {
   return (
-    <div className="App">
-      <GPATracker />
-    </div>
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
 
