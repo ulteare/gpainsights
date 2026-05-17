@@ -128,11 +128,12 @@ const GPATracker = () => {
         const yBottom = y.getPixelForValue(bMin);
         const bandH = yBottom - yTop;
         if (bandH < 10) return;
-        const midY = yTop + bandH / 2 + 3.5;
+        // Position label at bottom of band with small padding
+        const labelY = yBottom - 6;
         ctx.font = `${band.fontWeight} 10px 'Jost', sans-serif`;
         ctx.fillStyle = band.labelColor;
         ctx.textAlign = 'right';
-        ctx.fillText(band.label.toUpperCase(), right - 6, midY);
+        ctx.fillText(band.label.toUpperCase(), right - 6, labelY);
       });
       ctx.restore();
     }
@@ -240,41 +241,45 @@ const GPATracker = () => {
         </div>
         <span className={styles.badge}>Out of 4.0</span>
       </div>
-      <div className={styles.statsRow}>
-        <div className={styles.statCard}>
-          <div className={styles.label}>Starting GPA</div>
-          <div className={styles.value}>{startingGpa.toFixed(2)}</div>
-          <div className={styles.sub}>{startingLabel}</div>
+      <div className={styles.contentLayout}>
+        <div className={styles.chartSection}>
+          <div className={styles.chartCanvasWrap}>
+            <Line
+              ref={chartRef}
+              data={chartData}
+              options={options}
+              plugins={[bandPlugin]}
+              aria-label="Line chart of cumulative GPA from 3.62 to 3.94 across 8 semesters with coloured grade band regions"
+            />
+          </div>
+          <div className={styles.legendRow}>
+            <span className={styles.legendItem}>
+              <span className={styles.legendDot}></span>
+              <span>Regular semester</span>
+            </span>
+            <span className={styles.legendItem}>
+              <span className={styles.legendSpecialDot}></span>
+              <span>Exchange / Internship</span>
+            </span>
+          </div>
         </div>
-        <div className={styles.statCard}>
-          <div className={styles.label}>Current GPA</div>
-          <div className={styles.value}>{currentGpa.toFixed(2)}</div>
-          <div className={styles.sub}>{currentLabel}</div>
+        <div className={styles.statsColumn}>
+          <div className={styles.statCard}>
+            <div className={styles.label}>Starting GPA</div>
+            <div className={styles.value}>{startingGpa.toFixed(2)}</div>
+            <div className={styles.sub}>{startingLabel}</div>
+          </div>
+          <div className={styles.statCard}>
+            <div className={styles.label}>Current GPA</div>
+            <div className={styles.value}>{currentGpa.toFixed(2)}</div>
+            <div className={styles.sub}>{currentLabel}</div>
+          </div>
+          <div className={styles.statCard}>
+            <div className={styles.label}>Growth</div>
+            <div className={styles.value}>{growth >= 0 ? '+' : ''}{growth.toFixed(2)}</div>
+            <div className={styles.sub}>Over {yearSpan} {yearSpan === 1 ? 'year' : 'years'}</div>
+          </div>
         </div>
-        <div className={styles.statCard}>
-          <div className={styles.label}>Growth</div>
-          <div className={styles.value}>{growth >= 0 ? '+' : ''}{growth.toFixed(2)}</div>
-          <div className={styles.sub}>Over {yearSpan} {yearSpan === 1 ? 'year' : 'years'}</div>
-        </div>
-      </div>
-      <div className={styles.chartCanvasWrap}>
-        <Line
-          ref={chartRef}
-          data={chartData}
-          options={options}
-          plugins={[bandPlugin]}
-          aria-label="Line chart of cumulative GPA from 3.62 to 3.94 across 8 semesters with coloured grade band regions"
-        />
-      </div>
-      <div className={styles.legendRow}>
-        <span className={styles.legendItem}>
-          <span className={styles.legendDot}></span>
-          <span>Regular semester</span>
-        </span>
-        <span className={styles.legendItem}>
-          <span className={styles.legendSpecialDot}></span>
-          <span>Exchange / Internship</span>
-        </span>
       </div>
     </div>
   );
