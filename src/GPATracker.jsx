@@ -132,7 +132,7 @@ const GPATracker = () => {
           const band = bands.find(b => gpa >= b.min && gpa < b.max) || (gpa >= 3.9 ? bands[0] : null);
           el.innerHTML = `
             <div class="${styles.tooltipSem}">${d.label}${d.note ? ' · ' + d.note : ''}</div>
-            <div class="${styles.tooltipGpa}">${gpa.toFixed(4)}</div>
+            <div class="${styles.tooltipGpa}">${gpa.toFixed(2)}</div>
             ${band ? `<div class="${styles.tooltipBand}">${band.label}</div>` : ''}
           `;
           el.style.display = 'block';
@@ -162,7 +162,7 @@ const GPATracker = () => {
         }
       }
     },
-    layout: { padding: { top: 16, right: 100, bottom: 8, left: 8 } }
+    layout: { padding: { top: 16, right: 8, bottom: 8, left: 8 } }
   };
 
   return (
