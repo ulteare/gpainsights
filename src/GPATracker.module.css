@@ -1,0 +1,169 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.wrap {
+  font-family: 'Jost', sans-serif;
+  background: #FAF8F5;
+  border-radius: 16px;
+  border: 1px solid #E8E0D5;
+  padding: 2.5rem 2.5rem 2rem;
+  color: #2C2417;
+}
+
+.header {
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #E0D6C8;
+  padding-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.headerLeft h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 500;
+  color: #2C2417;
+  letter-spacing: 0.02em;
+}
+
+.headerLeft p {
+  font-size: 13px;
+  color: #8C7B68;
+  font-weight: 300;
+  margin-top: 4px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.badge {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #8C6E4B;
+  background: #F0E6D6;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid #DDD0BC;
+}
+
+.statsRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 2rem;
+}
+
+.statCard {
+  background: #F5EFE6;
+  border: 1px solid #E0D6C8;
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.label {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8C7B68;
+  font-weight: 400;
+  margin-bottom: 6px;
+}
+
+.value {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: #2C2417;
+}
+
+.sub {
+  font-size: 11px;
+  color: #A08E7A;
+  margin-top: 2px;
+}
+
+.chartCanvasWrap {
+  position: relative;
+  width: 100%;
+  height: 340px;
+}
+
+.legendRow {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid #E0D6C8;
+  font-size: 12px;
+  color: #8C7B68;
+  flex-wrap: wrap;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legendDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #9C7A50;
+}
+
+.legendSpecialDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #C8AA88;
+  border: 2px dashed #9C7A50;
+}
+
+.tooltipBox {
+  background: #2C2417;
+  color: #FAF8F5;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  pointer-events: none;
+  position: absolute;
+  white-space: nowrap;
+  z-index: 10;
+}
+
+.tooltipSem {
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #C8AA88;
+  margin-bottom: 2px;
+}
+
+.tooltipGpa {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  color: #FAF8F5;
+}
+
+.tooltipBand {
+  font-size: 10px;
+  color: #A08E7A;
+  margin-top: 2px;
+  letter-spacing: 0.05em;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+}

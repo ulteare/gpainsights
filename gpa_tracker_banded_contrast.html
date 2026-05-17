@@ -1,0 +1,288 @@
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  .wrap {
+    font-family: 'Jost', sans-serif;
+    background: #FAF8F5;
+    border-radius: 16px;
+    border: 1px solid #E8E0D5;
+    padding: 2.5rem 2.5rem 2rem;
+    color: #2C2417;
+  }
+  .header {
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #E0D6C8;
+    padding-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .header-left h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: #2C2417;
+    letter-spacing: 0.02em;
+  }
+  .header-left p {
+    font-size: 13px;
+    color: #8C7B68;
+    font-weight: 300;
+    margin-top: 4px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .badge {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #8C6E4B;
+    background: #F0E6D6;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid #DDD0BC;
+  }
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 2rem;
+  }
+  .stat-card {
+    background: #F5EFE6;
+    border: 1px solid #E0D6C8;
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .stat-card .label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8C7B68;
+    font-weight: 400;
+    margin-bottom: 6px;
+  }
+  .stat-card .value {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: #2C2417;
+  }
+  .stat-card .sub {
+    font-size: 11px;
+    color: #A08E7A;
+    margin-top: 2px;
+  }
+  .chart-canvas-wrap {
+    position: relative;
+    width: 100%;
+    height: 340px;
+  }
+  .legend-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid #E0D6C8;
+    font-size: 12px;
+    color: #8C7B68;
+    flex-wrap: wrap;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; background: #9C7A50; }
+  .legend-special-dot { width: 10px; height: 10px; border-radius: 50%; background: #C8AA88; border: 2px dashed #9C7A50; }
+  .tooltip-box {
+    background: #2C2417;
+    color: #FAF8F5;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    pointer-events: none;
+    position: absolute;
+    white-space: nowrap;
+    z-index: 10;
+  }
+  .tooltip-sem { font-weight: 500; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #C8AA88; margin-bottom: 2px; }
+  .tooltip-gpa { font-family: 'Playfair Display', serif; font-size: 16px; color: #FAF8F5; }
+  .tooltip-band { font-size: 10px; color: #A08E7A; margin-top: 2px; letter-spacing: 0.05em; }
+</style>
+
+<div class="wrap">
+  <h2 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Cumulative GPA over semesters with grade band highlights.</h2>
+  <div class="header">
+    <div class="header-left">
+      <h1>Academic Progress</h1>
+      <p>Cumulative GPA · All Semesters</p>
+    </div>
+    <span class="badge">Out of 4.0</span>
+  </div>
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="label">Starting GPA</div>
+      <div class="value">3.62</div>
+      <div class="sub">Year 1, Sem 1</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Current GPA</div>
+      <div class="value">3.94</div>
+      <div class="sub">Year 4, Sem 2</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Growth</div>
+      <div class="value">+0.32</div>
+      <div class="sub">Over 4 years</div>
+    </div>
+  </div>
+  <div class="chart-canvas-wrap">
+    <canvas id="gpaChart" role="img" aria-label="Line chart of cumulative GPA from 3.62 to 3.94 across 8 semesters with coloured grade band regions">GPA rose from 3.62 in Y1S1 to 3.94 in Y4S2.</canvas>
+  </div>
+  <div class="legend-row">
+    <span class="legend-item"><span class="legend-dot"></span><span>Regular semester</span></span>
+    <span class="legend-item"><span class="legend-special-dot"></span><span>Exchange / Internship</span></span>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const data = [
+  { sem: '1.1', label: 'Y1 S1', gpa: 3.62,   note: '' },
+  { sem: '1.2', label: 'Y1 S2', gpa: 3.77,   note: '' },
+  { sem: '2.1', label: 'Y2 S1', gpa: 3.8357, note: '' },
+  { sem: '2.2', label: 'Y2 S2', gpa: 3.8579, note: '' },
+  { sem: '3.1', label: 'Y3 S1', gpa: 3.8579, note: 'Exchange / Internship' },
+  { sem: '3.2', label: 'Y3 S2', gpa: 3.8579, note: 'Exchange / Internship' },
+  { sem: '4.1', label: 'Y4 S1', gpa: 3.9045, note: '' },
+  { sem: '4.2', label: 'Y4 S2', gpa: 3.9423, note: '' },
+];
+
+const exchangeSems = new Set(['3.1', '3.2']);
+
+const bands = [
+  { label: 'Peak',            min: 3.90, max: 4.00, fill: 'rgba(62,35,10,0.38)',  labelColor: 'rgba(62,35,10,0.65)'  },
+  { label: 'Summa Cum Laude', min: 3.80, max: 3.90, fill: 'rgba(95,58,18,0.28)',  labelColor: 'rgba(80,48,14,0.60)'  },
+  { label: "Dean's List",     min: 3.70, max: 3.80, fill: 'rgba(140,90,35,0.20)', labelColor: 'rgba(110,72,28,0.55)' },
+  { label: 'Magna Cum Laude', min: 3.60, max: 3.70, fill: 'rgba(180,130,65,0.14)',labelColor: 'rgba(145,100,45,0.50)'},
+  { label: 'Cum Laude',       min: 3.40, max: 3.60, fill: 'rgba(210,170,105,0.09)',labelColor: 'rgba(170,130,75,0.45)'},
+  { label: 'High Merit',      min: 3.20, max: 3.40, fill: 'rgba(225,195,145,0.06)',labelColor: 'rgba(190,155,100,0.40)'},
+  { label: 'Merit',           min: 3.00, max: 3.20, fill: 'rgba(235,215,175,0.04)',labelColor: 'rgba(205,175,125,0.38)'},
+];
+
+const bandPlugin = {
+  id: 'bandPlugin',
+  beforeDatasetsDraw(chart) {
+    const { ctx, chartArea: { left, right }, scales: { y } } = chart;
+    const yMin = 3.5, yMax = 4.0;
+    bands.forEach(band => {
+      const bMin = Math.max(band.min, yMin);
+      const bMax = Math.min(band.max, yMax);
+      if (bMin >= yMax || bMax <= yMin) return;
+      const yTop    = y.getPixelForValue(bMax);
+      const yBottom = y.getPixelForValue(bMin);
+      ctx.save();
+      ctx.fillStyle = band.fill;
+      ctx.fillRect(left, yTop, right - left, yBottom - yTop);
+      ctx.restore();
+    });
+  },
+  afterDatasetsDraw(chart) {
+    const { ctx, chartArea: { left, right }, scales: { y } } = chart;
+    const yMin = 3.5, yMax = 4.0;
+    ctx.save();
+    bands.forEach(band => {
+      const bMin = Math.max(band.min, yMin);
+      const bMax = Math.min(band.max, yMax);
+      if (bMin >= yMax || bMax <= yMin) return;
+      const yTop    = y.getPixelForValue(bMax);
+      const yBottom = y.getPixelForValue(bMin);
+      const bandH   = yBottom - yTop;
+      if (bandH < 10) return;
+      const midY = yTop + bandH / 2 + 3.5;
+      ctx.font = "300 10px 'Jost', sans-serif";
+      ctx.fillStyle = band.labelColor;
+      ctx.textAlign = 'right';
+      ctx.fillText(band.label.toUpperCase(), right - 6, midY);
+    });
+    ctx.restore();
+  }
+};
+
+new Chart(document.getElementById('gpaChart'), {
+  type: 'line',
+  plugins: [bandPlugin],
+  data: {
+    labels: data.map(d => d.sem),
+    datasets: [{
+      label: 'Cumulative GPA',
+      data: data.map(d => d.gpa),
+      fill: false,
+      borderColor: '#9C7A50',
+      borderWidth: 2.5,
+      tension: 0.35,
+      pointBackgroundColor: data.map(d => exchangeSems.has(d.sem) ? '#C8AA88' : '#9C7A50'),
+      pointBorderColor:     data.map(d => exchangeSems.has(d.sem) ? '#9C7A50' : '#9C7A50'),
+      pointBorderWidth:     data.map(d => exchangeSems.has(d.sem) ? 2.5 : 0),
+      pointRadius: 7,
+      pointHoverRadius: 9,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        enabled: false,
+        external(context) {
+          let el = document.getElementById('custom-tooltip');
+          if (!el) {
+            el = document.createElement('div');
+            el.id = 'custom-tooltip';
+            el.className = 'tooltip-box';
+            el.style.display = 'none';
+            document.querySelector('.chart-canvas-wrap').appendChild(el);
+          }
+          const model = context.tooltip;
+          if (model.opacity === 0) { el.style.display = 'none'; return; }
+          const idx = model.dataPoints[0].dataIndex;
+          const d = data[idx];
+          const gpa = d.gpa;
+          const band = bands.find(b => gpa >= b.min && gpa < b.max) || (gpa >= 3.9 ? bands[0] : null);
+          el.innerHTML = `
+            <div class="tooltip-sem">${d.label}${d.note ? ' · ' + d.note : ''}</div>
+            <div class="tooltip-gpa">${gpa.toFixed(4)}</div>
+            ${band ? `<div class="tooltip-band">${band.label}</div>` : ''}
+          `;
+          el.style.display = 'block';
+          const canvasEl = document.getElementById('gpaChart');
+          el.style.left = (canvasEl.offsetLeft + model.caretX - el.offsetWidth / 2) + 'px';
+          el.style.top  = (canvasEl.offsetTop  + model.caretY - el.offsetHeight - 14) + 'px';
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { color: 'rgba(200,170,136,0.15)', drawTicks: false },
+        border: { color: '#E0D6C8', width: 1 },
+        ticks: { color: '#8C7B68', font: { family: "'Jost', sans-serif", size: 12 }, padding: 8 }
+      },
+      y: {
+        min: 3.5,
+        max: 4.0,
+        grid: { color: 'rgba(200,170,136,0.18)', drawTicks: false },
+        border: { color: '#E0D6C8', width: 1, dash: [4,4] },
+        ticks: {
+          color: '#8C7B68',
+          font: { family: "'Jost', sans-serif", size: 12 },
+          padding: 10,
+          stepSize: 0.1,
+          callback: v => v.toFixed(1)
+        }
+      }
+    },
+    layout: { padding: { top: 16, right: 100, bottom: 8, left: 8 } }
+  }
+});
+</script>
