@@ -166,7 +166,14 @@ const GPATracker = () => {
         grid: { color: 'rgba(200,170,136,0.15)', drawTicks: false },
         border: { color: '#E0D6C8', width: 1 },
         ticks: { color: '#8C7B68', font: { family: "'Jost', sans-serif", size: 12 }, padding: 8 },
-        offset: true
+        offset: true,
+        title: {
+          display: true,
+          text: 'Semester',
+          color: '#8C7B68',
+          font: { family: "'Jost', sans-serif", size: 12, weight: 400 },
+          padding: { top: 8 }
+        }
       },
       y: {
         min: yMin,
@@ -179,6 +186,13 @@ const GPATracker = () => {
           padding: 10,
           stepSize: 0.1,
           callback: v => v.toFixed(1)
+        },
+        title: {
+          display: true,
+          text: 'GPA',
+          color: '#8C7B68',
+          font: { family: "'Jost', sans-serif", size: 12, weight: 400 },
+          padding: { bottom: 8 }
         }
       }
     },
