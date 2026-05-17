@@ -40,13 +40,13 @@ const GPATracker = () => {
   const exchangeSems = new Set(['3.1', '3.2']);
 
   const bands = [
-    { label: 'Peak', min: 3.90, max: 4.00, fill: 'rgba(62,35,10,0.38)', labelColor: 'rgba(62,35,10,0.65)' },
-    { label: 'Summa Cum Laude', min: 3.80, max: 3.90, fill: 'rgba(95,58,18,0.28)', labelColor: 'rgba(80,48,14,0.60)' },
-    { label: "Dean's List", min: 3.70, max: 3.80, fill: 'rgba(140,90,35,0.20)', labelColor: 'rgba(110,72,28,0.55)' },
-    { label: 'Magna Cum Laude', min: 3.60, max: 3.70, fill: 'rgba(180,130,65,0.14)', labelColor: 'rgba(145,100,45,0.50)' },
-    { label: 'Cum Laude', min: 3.40, max: 3.60, fill: 'rgba(210,170,105,0.09)', labelColor: 'rgba(170,130,75,0.45)' },
-    { label: 'High Merit', min: 3.20, max: 3.40, fill: 'rgba(225,195,145,0.06)', labelColor: 'rgba(190,155,100,0.40)' },
-    { label: 'Merit', min: 3.00, max: 3.20, fill: 'rgba(235,215,175,0.04)', labelColor: 'rgba(205,175,125,0.38)' },
+    { label: 'Peak 🏔️', min: 3.90, max: 4.00, fill: 'rgba(62,35,10,0.38)', labelColor: '#FAF8F5', fontWeight: 500 },
+    { label: 'Summa Cum Laude 🥇', min: 3.80, max: 3.90, fill: 'rgba(95,58,18,0.28)', labelColor: '#FAF8F5', fontWeight: 500 },
+    { label: "Dean's List 📖", min: 3.70, max: 3.80, fill: 'rgba(140,90,35,0.20)', labelColor: 'rgba(140,100,50,1)', fontWeight: 500 },
+    { label: 'Magna Cum Laude 🥈', min: 3.60, max: 3.70, fill: 'rgba(180,130,65,0.14)', labelColor: 'rgba(120,85,40,1)', fontWeight: 500 },
+    { label: 'Cum Laude 🥉', min: 3.40, max: 3.60, fill: 'rgba(210,170,105,0.09)', labelColor: 'rgba(100,70,35,1)', fontWeight: 500 },
+    { label: 'High Merit', min: 3.20, max: 3.40, fill: 'rgba(225,195,145,0.06)', labelColor: 'rgba(90,60,30,1)', fontWeight: 500 },
+    { label: 'Merit', min: 3.00, max: 3.20, fill: 'rgba(235,215,175,0.04)', labelColor: 'rgba(80,50,25,1)', fontWeight: 500 },
   ];
 
   const bandPlugin = {
@@ -79,7 +79,7 @@ const GPATracker = () => {
         const bandH = yBottom - yTop;
         if (bandH < 10) return;
         const midY = yTop + bandH / 2 + 3.5;
-        ctx.font = "300 10px 'Jost', sans-serif";
+        ctx.font = `${band.fontWeight} 10px 'Jost', sans-serif`;
         ctx.fillStyle = band.labelColor;
         ctx.textAlign = 'right';
         ctx.fillText(band.label.toUpperCase(), right - 6, midY);
