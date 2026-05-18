@@ -14,12 +14,31 @@ const SemesterForm = ({ semester, onSave, onCancel }) => {
 
   const [errors, setErrors] = useState({});
 
+  // Auto-generate semester label from semester code
+  const generateLabel = (code) => {
+    if (!code) return '';
+    const parts = code.split('.');
+    if (parts.length === 2) {
+      return `Y${parts[0]} S${parts[1]}`;
+    }
+    return code;
+  };
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value,
-    });
+
+    if (name === 'semester_code') {
+      setFormData({
+        ...formData,
+        semester_code: value,
+        semester_label: generateLabel(value),
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: type === 'checkbox' ? checked : value,
+      });
+    }
   };
 
   const validate = () => {
@@ -29,16 +48,12 @@ const SemesterForm = ({ semester, onSave, onCancel }) => {
       newErrors.semester_code = 'Semester code is required';
     }
 
-    if (!formData.semester_label) {
-      newErrors.semester_label = 'Semester label is required';
-    }
-
     if (!formData.gpa) {
       newErrors.gpa = 'GPA is required';
     } else {
       const gpaNum = parseFloat(formData.gpa);
-      if (isNaN(gpaNum) || gpaNum < 0 || gpaNum > 5) {
-        newErrors.gpa = 'GPA must be between 0.0 and 5.0';
+      if (isNaN(gpaNum) || gpaNum < 0 || gpaNum > 4) {
+        newErrors.gpa = 'GPA must be between 0.0 and 4.0';
       }
     }
 
@@ -77,19 +92,18 @@ const SemesterForm = ({ semester, onSave, onCancel }) => {
 
       <div className={styles.formGroup}>
         <label htmlFor="semester_label" className={styles.label}>
-          Semester Label <span className={styles.required}>*</span>
+          Semester Label
         </label>
         <input
           type="text"
           id="semester_label"
           name="semester_label"
           value={formData.semester_label}
-          onChange={handleChange}
-          placeholder="e.g., Y1 S1, Y2 S2"
-          className={styles.input}
+          readOnly
+          placeholder="Auto-generated from code"
+          className={`${styles.input} ${styles.readOnly}`}
         />
-        {errors.semester_label && <span className={styles.error}>{errors.semester_label}</span>}
-        <span className={styles.hint}>Display name (e.g., Y1 S1)</span>
+        <span className={styles.hint}>Auto-generated from semester code</span>
       </div>
 
       <div className={styles.formGroup}>
@@ -102,10 +116,10 @@ const SemesterForm = ({ semester, onSave, onCancel }) => {
           name="gpa"
           value={formData.gpa}
           onChange={handleChange}
-          placeholder="e.g., 3.85"
+          placeholder="Enter your GPA"
           step="0.01"
           min="0"
-          max="5"
+          max="4"
           className={styles.input}
         />
         {errors.gpa && <span className={styles.error}>{errors.gpa}</span>}
