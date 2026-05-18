@@ -54,14 +54,26 @@ const GPATracker = () => {
   if (!data || data.length === 0) {
     return (
       <div className={styles.wrap}>
-        <div style={{ padding: '2rem', textAlign: 'center' }}>
-          <h2 style={{ fontFamily: "'Playfair Display', serif", color: '#2C2417', marginBottom: '1rem' }}>
-            No Semester Data Yet
-          </h2>
-          <p style={{ fontFamily: "'Jost', sans-serif", color: '#8C7B68' }}>
-            Add your first semester to start tracking your GPA progress!
+        <div className={styles.emptyState}>
+          <div className={styles.emptyIcon}>📊</div>
+          <h2 className={styles.emptyTitle}>Start Tracking Your GPA</h2>
+          <p className={styles.emptyDescription}>
+            Add your semesters and grades to visualize your academic progress over time.
           </p>
+          <button
+            onClick={() => setShowManager(true)}
+            className={styles.ctaButton}
+          >
+            Add Your First Semester
+          </button>
         </div>
+        {showManager && (
+          <SemesterManager
+            semesters={[]}
+            onClose={() => setShowManager(false)}
+            onUpdate={refetch}
+          />
+        )}
       </div>
     );
   }

@@ -210,6 +210,63 @@
   clip: rect(0,0,0,0);
 }
 
+/* Empty State */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.emptyIcon {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+}
+
+.emptyTitle {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.75rem;
+  font-weight: 500;
+  color: #2C2417;
+  margin-bottom: 0.75rem;
+}
+
+.emptyDescription {
+  font-family: 'Jost', sans-serif;
+  font-size: 1rem;
+  color: #8C7B68;
+  margin-bottom: 2rem;
+  max-width: 400px;
+  line-height: 1.6;
+}
+
+.ctaButton {
+  font-family: 'Jost', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  background: #8C6E4B;
+  color: #FAF8F5;
+  box-shadow: 0 4px 12px rgba(140, 110, 75, 0.2);
+}
+
+.ctaButton:hover {
+  background: #6B4E2A;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(140, 110, 75, 0.3);
+}
+
+.ctaButton:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(140, 110, 75, 0.2);
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
   .contentLayout {
