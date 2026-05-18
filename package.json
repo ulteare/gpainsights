@@ -21,6 +21,9 @@
   },
   "homepage": "https://github.com/ulteare/gpainsights#readme",
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@supabase/supabase-js": "^2.105.4",
     "chart.js": "^4.5.1",
     "react": "^19.2.6",
