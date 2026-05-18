@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -11,6 +11,7 @@ import {
   Legend,
 } from 'chart.js';
 import { useSemesters } from './hooks/useSemesters';
+import SemesterManager from './components/SemesterManager';
 import styles from './GPATracker.module.css';
 
 // Register ChartJS components
@@ -26,7 +27,8 @@ ChartJS.register(
 
 const GPATracker = () => {
   const chartRef = useRef(null);
-  const { semesters: data, loading, error } = useSemesters();
+  const { semesters: data, loading, error, refetch } = useSemesters();
+  const [showManager, setShowManager] = useState(false);
 
   // If loading or error, show appropriate state
   if (loading) {
@@ -239,7 +241,15 @@ const GPATracker = () => {
           <h1>Academic Progress</h1>
           <p>Cumulative GPA · All Semesters</p>
         </div>
-        <span className={styles.badge}>Out of 4.0</span>
+        <div className={styles.headerRight}>
+          <button
+            onClick={() => setShowManager(true)}
+            className={styles.settingsButton}
+          >
+            Add/Edit Semesters
+          </button>
+          <span className={styles.badge}>Out of 4.0</span>
+        </div>
       </div>
       <div className={styles.contentLayout}>
         <div className={styles.chartSection}>
@@ -281,6 +291,14 @@ const GPATracker = () => {
           </div>
         </div>
       </div>
+
+      {showManager && (
+        <SemesterManager
+          semesters={data}
+          onClose={() => setShowManager(false)}
+          onUpdate={refetch}
+        />
+      )}
     </div>
   );
 };

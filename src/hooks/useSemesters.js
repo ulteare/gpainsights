@@ -31,8 +31,9 @@ export const useSemesters = () => {
 
       if (fetchError) throw fetchError;
 
-      // Transform data to match GPATracker format
+      // Store both raw and transformed data
       const transformedData = data.map(semester => ({
+        ...semester, // Keep all original fields for manager
         sem: semester.semester_code,
         label: semester.semester_label,
         gpa: semester.gpa,
