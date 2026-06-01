@@ -124,6 +124,14 @@
   color: #2C2417;
 }
 
+.absoluteGrowth {
+  font-family: 'Jost', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #8C7B68;
+  margin-left: 6px;
+}
+
 .sub {
   font-size: 11px;
   color: #A08E7A;

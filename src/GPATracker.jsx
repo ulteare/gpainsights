@@ -110,7 +110,8 @@ const GPATracker = () => {
   // Calculate stats for display with capped values
   const startingGpa = capGPA(data[0].gpa);
   const currentGpa = capGPA(data[data.length - 1].gpa);
-  const growth = currentGpa - startingGpa;
+  const absoluteGrowth = currentGpa - startingGpa;
+  const percentageGrowth = (absoluteGrowth / startingGpa) * 100;
   const startingLabel = data[0].label;
   const currentLabel = data[data.length - 1].label;
 
@@ -358,7 +359,12 @@ const GPATracker = () => {
           </div>
           <div className={styles.statCard}>
             <div className={styles.label}>Growth</div>
-            <div className={styles.value}>{growth >= 0 ? '+' : ''}{growth.toFixed(2)}</div>
+            <div className={styles.value}>
+              {percentageGrowth >= 0 ? '+' : ''}{percentageGrowth.toFixed(1)}%
+              <span className={styles.absoluteGrowth}>
+                ({absoluteGrowth >= 0 ? '+' : ''}{absoluteGrowth.toFixed(2)})
+              </span>
+            </div>
             <div className={styles.sub}>Over {yearSpan} {yearSpan === 1 ? 'year' : 'years'}</div>
           </div>
         </div>
