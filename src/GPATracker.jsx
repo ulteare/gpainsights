@@ -150,10 +150,11 @@ const GPATracker = () => {
         if (bandH < 10) return;
         // Position label at bottom of band with small padding
         const labelY = yBottom - 6;
+        const labelX = isMobile ? right - 4 : right - 6;
         ctx.font = `${band.fontWeight} ${isMobile ? 9 : 10}px 'Jost', sans-serif`;
         ctx.fillStyle = band.labelColor;
         ctx.textAlign = 'right';
-        ctx.fillText(band.label.toUpperCase(), right - 6, labelY);
+        ctx.fillText(band.label.toUpperCase(), labelX, labelY);
       });
 
       ctx.restore();

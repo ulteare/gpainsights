@@ -339,6 +339,11 @@
     max-width: none;
     position: relative;
     box-sizing: border-box;
+    overflow: visible;
+  }
+
+  .chartCanvasWrap canvas {
+    overflow: visible !important;
   }
 
   .legendRow {
