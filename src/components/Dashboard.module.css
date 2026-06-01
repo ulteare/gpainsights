@@ -147,7 +147,8 @@
 
 @media (max-width: 768px) {
   .main {
-    padding: 1rem;
+    padding: 2rem;
+    max-width: 100%;
   }
 
   .floatingSettings {

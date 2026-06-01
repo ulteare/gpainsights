@@ -29,31 +29,36 @@ const GPATracker = () => {
   const chartRef = useRef(null);
   const { semesters: data, loading, error, refetch } = useSemesters();
   const [showManager, setShowManager] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // If loading or error, show appropriate state
   if (loading) {
     return (
-      <div className={styles.wrap}>
-        <div style={{ padding: '2rem', textAlign: 'center', color: '#8C7B68' }}>
-          Loading your GPA data...
-        </div>
+      <div style={{ padding: '2rem', textAlign: 'center', color: '#8C7B68' }}>
+        Loading your GPA data...
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className={styles.wrap}>
-        <div style={{ padding: '2rem', textAlign: 'center', color: '#C33' }}>
-          Error loading data: {error}
-        </div>
+      <div style={{ padding: '2rem', textAlign: 'center', color: '#C33' }}>
+        Error loading data: {error}
       </div>
     );
   }
 
   if (!data || data.length === 0) {
     return (
-      <div className={styles.wrap}>
+      <>
         <div className={styles.emptyState}>
           <div className={styles.emptyIcon}>📊</div>
           <h2 className={styles.emptyTitle}>Start Tracking Your GPA</h2>
@@ -74,7 +79,7 @@ const GPATracker = () => {
             onUpdate={refetch}
           />
         )}
-      </div>
+      </>
     );
   }
 
@@ -134,21 +139,50 @@ const GPATracker = () => {
     afterDatasetsDraw(chart) {
       const { ctx, chartArea: { left, right }, scales: { y } } = chart;
       ctx.save();
-      bands.forEach(band => {
-        const bMin = Math.max(band.min, yMin);
-        const bMax = Math.min(band.max, yMax);
-        if (bMin >= yMax || bMax <= yMin) return;
-        const yTop = y.getPixelForValue(bMax);
-        const yBottom = y.getPixelForValue(bMin);
-        const bandH = yBottom - yTop;
-        if (bandH < 10) return;
-        // Position label at bottom of band with small padding
-        const labelY = yBottom - 6;
-        ctx.font = `${band.fontWeight} 10px 'Jost', sans-serif`;
-        ctx.fillStyle = band.labelColor;
-        ctx.textAlign = 'right';
-        ctx.fillText(band.label.toUpperCase(), right - 6, labelY);
+
+      // Only show band labels on desktop
+      if (!isMobile) {
+        bands.forEach(band => {
+          const bMin = Math.max(band.min, yMin);
+          const bMax = Math.min(band.max, yMax);
+          if (bMin >= yMax || bMax <= yMin) return;
+          const yTop = y.getPixelForValue(bMax);
+          const yBottom = y.getPixelForValue(bMin);
+          const bandH = yBottom - yTop;
+          if (bandH < 10) return;
+          // Position label at bottom of band with small padding
+          const labelY = yBottom - 6;
+          ctx.font = `${band.fontWeight} 10px 'Jost', sans-serif`;
+          ctx.fillStyle = band.labelColor;
+          ctx.textAlign = 'right';
+          ctx.fillText(band.label.toUpperCase(), right - 6, labelY);
+        });
+      }
+
+      ctx.restore();
+    }
+  };
+
+  const mobileLabelsPlugin = {
+    id: 'mobileLabelsPlugin',
+    afterDatasetsDraw(chart) {
+      if (!isMobile) return;
+
+      const { ctx, data: chartData, scales: { x, y } } = chart;
+      const dataset = chartData.datasets[0];
+
+      ctx.save();
+      ctx.font = '500 11px "Jost", sans-serif';
+      ctx.fillStyle = '#2C2417';
+      ctx.textAlign = 'center';
+
+      dataset.data.forEach((value, index) => {
+        const xPos = x.getPixelForValue(index);
+        const yPos = y.getPixelForValue(value);
+
+        ctx.fillText(value.toFixed(2), xPos, yPos - 12);
       });
+
       ctx.restore();
     }
   };
@@ -177,7 +211,7 @@ const GPATracker = () => {
       legend: { display: false },
       tooltip: {
         enabled: false,
-        external(context) {
+        external: isMobile ? undefined : function(context) {
           let el = document.getElementById('custom-tooltip');
           if (!el) {
             el = document.createElement('div');
@@ -211,13 +245,13 @@ const GPATracker = () => {
       x: {
         grid: { color: 'rgba(200,170,136,0.15)', drawTicks: false },
         border: { color: '#E0D6C8', width: 1 },
-        ticks: { color: '#8C7B68', font: { family: "'Jost', sans-serif", size: 12 }, padding: 8 },
+        ticks: { color: '#8C7B68', font: { family: "'Jost', sans-serif", size: isMobile ? 10 : 12 }, padding: 8 },
         offset: true,
         title: {
           display: true,
           text: 'Semester',
           color: '#8C7B68',
-          font: { family: "'Jost', sans-serif", size: 12, weight: 400 },
+          font: { family: "'Jost', sans-serif", size: isMobile ? 11 : 12, weight: 400 },
           padding: { top: 8 }
         }
       },
@@ -227,6 +261,7 @@ const GPATracker = () => {
         grid: { color: 'rgba(200,170,136,0.18)', drawTicks: false },
         border: { color: '#E0D6C8', width: 1, dash: [4, 4] },
         ticks: {
+          display: !isMobile,
           color: '#8C7B68',
           font: { family: "'Jost', sans-serif", size: 12 },
           padding: 10,
@@ -234,7 +269,7 @@ const GPATracker = () => {
           callback: v => v.toFixed(1)
         },
         title: {
-          display: true,
+          display: !isMobile,
           text: 'GPA',
           color: '#8C7B68',
           font: { family: "'Jost', sans-serif", size: 12, weight: 400 },
@@ -242,11 +277,15 @@ const GPATracker = () => {
         }
       }
     },
-    layout: { padding: { top: 16, right: 8, bottom: 8, left: 8 } }
+    layout: {
+      padding: isMobile
+        ? { top: 24, right: 8, bottom: 8, left: 8 }
+        : { top: 16, right: 8, bottom: 8, left: 8 }
+    }
   };
 
   return (
-    <div className={styles.wrap}>
+    <>
       <h2 className={styles.srOnly}>Cumulative GPA over semesters with grade band highlights.</h2>
       <div className={styles.header}>
         <div className={styles.headerLeft}>
@@ -270,7 +309,7 @@ const GPATracker = () => {
               ref={chartRef}
               data={chartData}
               options={options}
-              plugins={[bandPlugin]}
+              plugins={[bandPlugin, mobileLabelsPlugin]}
               aria-label="Line chart of cumulative GPA from 3.62 to 3.94 across 8 semesters with coloured grade band regions"
             />
           </div>
@@ -311,7 +350,7 @@ const GPATracker = () => {
           onUpdate={refetch}
         />
       )}
-    </div>
+    </>
   );
 };
 
