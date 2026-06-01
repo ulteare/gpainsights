@@ -194,7 +194,12 @@ const GPATracker = () => {
         const xPos = x.getPixelForValue(index);
         const yPos = y.getPixelForValue(value);
 
-        ctx.fillText(value.toFixed(2), xPos, yPos - 12);
+        // Show label below for high grades to avoid overflow
+        // SMU: 3.96+, NUS/NTU: 4.91+
+        const isHighGrade = (isSMU && value >= 3.96) || (!isSMU && value >= 4.91);
+        const labelOffset = isHighGrade ? 16 : -12;
+
+        ctx.fillText(value.toFixed(2), xPos, yPos + labelOffset);
       });
 
       ctx.restore();
