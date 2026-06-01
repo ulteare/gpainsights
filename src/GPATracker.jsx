@@ -140,24 +140,21 @@ const GPATracker = () => {
       const { ctx, chartArea: { left, right }, scales: { y } } = chart;
       ctx.save();
 
-      // Only show band labels on desktop
-      if (!isMobile) {
-        bands.forEach(band => {
-          const bMin = Math.max(band.min, yMin);
-          const bMax = Math.min(band.max, yMax);
-          if (bMin >= yMax || bMax <= yMin) return;
-          const yTop = y.getPixelForValue(bMax);
-          const yBottom = y.getPixelForValue(bMin);
-          const bandH = yBottom - yTop;
-          if (bandH < 10) return;
-          // Position label at bottom of band with small padding
-          const labelY = yBottom - 6;
-          ctx.font = `${band.fontWeight} 10px 'Jost', sans-serif`;
-          ctx.fillStyle = band.labelColor;
-          ctx.textAlign = 'right';
-          ctx.fillText(band.label.toUpperCase(), right - 6, labelY);
-        });
-      }
+      bands.forEach(band => {
+        const bMin = Math.max(band.min, yMin);
+        const bMax = Math.min(band.max, yMax);
+        if (bMin >= yMax || bMax <= yMin) return;
+        const yTop = y.getPixelForValue(bMax);
+        const yBottom = y.getPixelForValue(bMin);
+        const bandH = yBottom - yTop;
+        if (bandH < 10) return;
+        // Position label at bottom of band with small padding
+        const labelY = yBottom - 6;
+        ctx.font = `${band.fontWeight} ${isMobile ? 9 : 10}px 'Jost', sans-serif`;
+        ctx.fillStyle = band.labelColor;
+        ctx.textAlign = 'right';
+        ctx.fillText(band.label.toUpperCase(), right - 6, labelY);
+      });
 
       ctx.restore();
     }
