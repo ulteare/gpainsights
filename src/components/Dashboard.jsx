@@ -1,17 +1,36 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useUserSettings } from '../hooks/useUserSettings';
 import GPATracker from '../GPATracker';
 import styles from './Dashboard.module.css';
 
 const Dashboard = () => {
   const { user, signOut } = useAuth();
+  const { settings, loading: settingsLoading, updateSchool } = useUserSettings();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isSwitchingSchool, setIsSwitchingSchool] = useState(false);
 
   const handleSignOut = async () => {
     try {
       await signOut();
     } catch (error) {
       console.error('Error signing out:', error);
+    }
+  };
+
+  const handleSwitchSchool = async () => {
+    if (!settings) return;
+
+    try {
+      setIsSwitchingSchool(true);
+      const newSchool = settings.school === 'SMU' ? 'NUS' : 'SMU';
+      await updateSchool(newSchool);
+      // Reload the page to refresh all components with new grade scale
+      window.location.reload();
+    } catch (error) {
+      console.error('Error switching school:', error);
+    } finally {
+      setIsSwitchingSchool(false);
     }
   };
 
@@ -66,6 +85,30 @@ const Dashboard = () => {
                 ✕
               </button>
             </div>
+
+            {/* School Setting */}
+            <div className={styles.settingSection}>
+              <div className={styles.settingLabel}>School</div>
+              <div className={styles.settingValue}>
+                {settingsLoading ? (
+                  <span className={styles.loadingText}>Loading...</span>
+                ) : (
+                  <>
+                    <span className={styles.currentSchool}>
+                      {settings?.school || 'SMU'} ({settings?.school === 'SMU' ? '4.0' : '5.0'} scale)
+                    </span>
+                    <button
+                      onClick={handleSwitchSchool}
+                      className={styles.switchButton}
+                      disabled={isSwitchingSchool || settingsLoading}
+                    >
+                      {isSwitchingSchool ? 'Switching...' : `Switch to ${settings?.school === 'SMU' ? 'NUS/NTU' : 'SMU'}`}
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+
             <button onClick={handleSignOut} className={styles.signOutButton}>
               Sign Out
             </button>

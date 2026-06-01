@@ -11,6 +11,7 @@ import {
   Legend,
 } from 'chart.js';
 import { useSemesters } from './hooks/useSemesters';
+import { useUserSettings } from './hooks/useUserSettings';
 import SemesterManager from './components/SemesterManager';
 import styles from './GPATracker.module.css';
 
@@ -28,6 +29,7 @@ ChartJS.register(
 const GPATracker = () => {
   const chartRef = useRef(null);
   const { semesters: data, loading, error, refetch } = useSemesters();
+  const { settings } = useUserSettings();
   const [showManager, setShowManager] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
@@ -83,24 +85,31 @@ const GPATracker = () => {
     );
   }
 
+  // Get grade scale (4.0 for SMU, 5.0 for NUS/NTU)
+  const gradeScale = settings?.grade_scale || 4.0;
+  const isSMU = gradeScale === 4.0;
+
+  // Helper function to cap GPA at grade scale
+  const capGPA = (gpa) => isSMU ? Math.min(gpa, 4.0) : gpa;
+
   // Determine which semesters are special (exchange/internship)
   const exchangeSems = new Set(
     data.filter(d => d.note && d.note.toLowerCase().includes('exchange') || d.note.toLowerCase().includes('internship'))
       .map(d => d.sem)
   );
 
-  // Calculate dynamic y-axis range
-  const gpas = data.map(d => d.gpa);
-  const minGpa = Math.min(...gpas);
-  const maxGpa = Math.max(...gpas);
+  // Calculate dynamic y-axis range with capped GPAs
+  const cappedGpas = data.map(d => capGPA(d.gpa));
+  const minGpa = Math.min(...cappedGpas);
+  const maxGpa = Math.max(...cappedGpas);
 
-  // Calculate y-axis min/max with 0.1 padding, but respect 0.0-4.0 bounds
+  // Calculate y-axis min/max with 0.1 padding, but respect grade scale bounds
   const yMin = Math.max(0.0, Math.floor((minGpa - 0.1) * 10) / 10);
-  const yMax = Math.min(4.0, Math.ceil((maxGpa + 0.1) * 10) / 10);
+  const yMax = Math.min(gradeScale, Math.ceil((maxGpa + 0.1) * 10) / 10);
 
-  // Calculate stats for display
-  const startingGpa = data[0].gpa;
-  const currentGpa = data[data.length - 1].gpa;
+  // Calculate stats for display with capped values
+  const startingGpa = capGPA(data[0].gpa);
+  const currentGpa = capGPA(data[data.length - 1].gpa);
   const growth = currentGpa - startingGpa;
   const startingLabel = data[0].label;
   const currentLabel = data[data.length - 1].label;
@@ -189,7 +198,7 @@ const GPATracker = () => {
     labels: data.map(d => d.sem),
     datasets: [{
       label: 'Cumulative GPA',
-      data: data.map(d => d.gpa),
+      data: data.map(d => capGPA(d.gpa)),
       fill: false,
       borderColor: '#6B4E2A',
       borderWidth: 2.5,
@@ -225,7 +234,7 @@ const GPATracker = () => {
           }
           const idx = model.dataPoints[0].dataIndex;
           const d = data[idx];
-          const gpa = d.gpa;
+          const gpa = capGPA(d.gpa);
           const band = bands.find(b => gpa >= b.min && gpa < b.max) || (gpa >= 3.9 ? bands[0] : null);
           el.innerHTML = `
             <div class="${styles.tooltipSem}">${d.label}${d.note ? ' · ' + d.note : ''}</div>
@@ -297,7 +306,9 @@ const GPATracker = () => {
           >
             Add/Edit Semesters
           </button>
-          <span className={styles.badge}>Out of 4.0</span>
+          <span className={styles.badge}>
+            Out of {settings?.grade_scale || 4.0}
+          </span>
         </div>
       </div>
       <div className={styles.contentLayout}>

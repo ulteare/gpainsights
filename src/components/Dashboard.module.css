@@ -126,6 +126,66 @@
   color: #2C2417;
 }
 
+.settingSection {
+  padding: 1rem 0;
+  border-bottom: 1px solid #E0D6C8;
+  margin-bottom: 1rem;
+}
+
+.settingLabel {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #8C7B68;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.settingValue {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.currentSchool {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #2C2417;
+}
+
+.loadingText {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.85rem;
+  color: #8C7B68;
+  font-style: italic;
+}
+
+.switchButton {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #8C6E4B;
+  background: transparent;
+  border: 1px solid #E0D6C8;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.switchButton:hover:not(:disabled) {
+  background: #F0E6D6;
+  border-color: #8C6E4B;
+}
+
+.switchButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .signOutButton {
   font-family: 'Jost', sans-serif;
   font-size: 0.9rem;

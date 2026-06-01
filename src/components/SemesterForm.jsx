@@ -52,8 +52,8 @@ const SemesterForm = ({ semester, onSave, onCancel }) => {
       newErrors.gpa = 'GPA is required';
     } else {
       const gpaNum = parseFloat(formData.gpa);
-      if (isNaN(gpaNum) || gpaNum < 0 || gpaNum > 4) {
-        newErrors.gpa = 'GPA must be between 0.0 and 4.0';
+      if (isNaN(gpaNum) || gpaNum < 0 || gpaNum > 5) {
+        newErrors.gpa = 'GPA must be between 0.0 and 5.0';
       }
     }
 
@@ -119,7 +119,7 @@ const SemesterForm = ({ semester, onSave, onCancel }) => {
           placeholder="Enter your GPA"
           step="0.01"
           min="0"
-          max="4"
+          max="5"
           className={styles.input}
         />
         {errors.gpa && <span className={styles.error}>{errors.gpa}</span>}
