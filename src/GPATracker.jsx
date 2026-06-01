@@ -129,11 +129,11 @@ const GPATracker = () => {
     { label: 'High Merit', min: 3.20, max: 3.40, fill: 'rgba(225,195,145,0.06)', labelColor: 'rgba(90,60,30,1)', fontWeight: 500 },
     { label: 'Merit', min: 3.00, max: 3.20, fill: 'rgba(235,215,175,0.04)', labelColor: 'rgba(80,50,25,1)', fontWeight: 500 },
   ] : [
-    // NUS/NTU grade bands
-    { label: 'First Class 🥇', min: 4.50, max: 5.00, fill: 'rgba(62,35,10,0.38)', labelColor: '#FAF8F5', fontWeight: 500 },
-    { label: 'Second Upper 🥈', min: 4.00, max: 4.50, fill: 'rgba(95,58,18,0.28)', labelColor: '#FAF8F5', fontWeight: 500 },
-    { label: 'Second Lower 🥉', min: 3.50, max: 4.00, fill: 'rgba(140,90,35,0.20)', labelColor: 'rgba(140,100,50,1)', fontWeight: 500 },
-    { label: 'Third Class', min: 3.20, max: 3.50, fill: 'rgba(180,130,65,0.14)', labelColor: 'rgba(120,85,40,1)', fontWeight: 500 },
+    // NUS/NTU grade bands - using SMU's gradient starting from second highest
+    { label: 'First Class 🥇', min: 4.50, max: 5.00, fill: 'rgba(95,58,18,0.28)', labelColor: '#FAF8F5', fontWeight: 500 },
+    { label: 'Second Upper 🥈', min: 4.00, max: 4.50, fill: 'rgba(140,90,35,0.20)', labelColor: 'rgba(140,100,50,1)', fontWeight: 500 },
+    { label: 'Second Lower 🥉', min: 3.50, max: 4.00, fill: 'rgba(180,130,65,0.14)', labelColor: 'rgba(120,85,40,1)', fontWeight: 500 },
+    { label: 'Third Class', min: 3.20, max: 3.50, fill: 'rgba(210,170,105,0.09)', labelColor: 'rgba(100,70,35,1)', fontWeight: 500 },
   ];
 
   const bandPlugin = {

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useUserSettings } from '../hooks/useUserSettings';
 import GPATracker from '../GPATracker';
+import SchoolSelector from './SchoolSelector';
 import styles from './Dashboard.module.css';
 
 const Dashboard = () => {
@@ -9,6 +10,9 @@ const Dashboard = () => {
   const { settings, loading: settingsLoading, updateSchool } = useUserSettings();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isSwitchingSchool, setIsSwitchingSchool] = useState(false);
+
+  // Check if user needs to select a school
+  const needsSchoolSelection = !settingsLoading && settings && !settings.school;
 
   const handleSignOut = async () => {
     try {
@@ -34,8 +38,22 @@ const Dashboard = () => {
     }
   };
 
+  const handleSchoolSelect = async (school) => {
+    try {
+      await updateSchool(school);
+      // Reload to apply new settings
+      window.location.reload();
+    } catch (error) {
+      console.error('Error setting school:', error);
+      throw error;
+    }
+  };
+
   return (
     <div className={styles.dashboardContainer}>
+      {/* School Selection Modal for new users */}
+      {needsSchoolSelection && <SchoolSelector onSelect={handleSchoolSelect} />}
+
       <main className={styles.main}>
         <GPATracker />
       </main>
