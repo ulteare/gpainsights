@@ -1,68 +1,7 @@
 .dashboardContainer {
   min-height: 100vh;
   background: #FAF8F5;
-}
-
-.header {
-  background: #FFFFFF;
-  border-bottom: 1px solid #E0D6C8;
-  padding: 1rem 2rem;
-  box-shadow: 0 2px 8px rgba(44, 36, 23, 0.05);
-}
-
-.headerContent {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.headerContent h1 {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.5rem;
-  font-weight: 500;
-  color: #2C2417;
-  margin: 0;
-}
-
-.userSection {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 2px solid #E0D6C8;
-}
-
-.userName {
-  font-family: 'Jost', sans-serif;
-  font-size: 0.9rem;
-  color: #2C2417;
-  font-weight: 400;
-}
-
-.signOutButton {
-  font-family: 'Jost', sans-serif;
-  font-size: 0.9rem;
-  font-weight: 400;
-  color: #8C7B68;
-  background: transparent;
-  border: 1px solid #E0D6C8;
-  border-radius: 8px;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.signOutButton:hover {
-  background: #FAF8F5;
-  border-color: #8C6E4B;
-  color: #6B4E2A;
+  position: relative;
 }
 
 .main {
@@ -71,23 +10,152 @@
   padding: 2rem;
 }
 
+/* Floating Settings */
+.floatingSettings {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 1000;
+}
+
+.settingsCircle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 2px solid #E0D6C8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(44, 36, 23, 0.15);
+  color: #8C7B68;
+}
+
+.settingsCircle:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(44, 36, 23, 0.2);
+  border-color: #8C6E4B;
+}
+
+.settingsAvatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.settingsExpanded {
+  background: #FFFFFF;
+  border: 1px solid #E0D6C8;
+  border-radius: 16px;
+  padding: 1.25rem;
+  box-shadow: 0 8px 24px rgba(44, 36, 23, 0.2);
+  min-width: 280px;
+  animation: expandSettings 0.3s ease;
+}
+
+@keyframes expandSettings {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.settingsHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #E0D6C8;
+}
+
+.expandedAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #E0D6C8;
+  flex-shrink: 0;
+}
+
+.userInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.userName {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #2C2417;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.userEmail {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.75rem;
+  color: #8C7B68;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.closeSettings {
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  color: #8C7B68;
+  cursor: pointer;
+  padding: 0.25rem;
+  line-height: 1;
+  transition: color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.closeSettings:hover {
+  color: #2C2417;
+}
+
+.signOutButton {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #C33;
+  background: transparent;
+  border: 1px solid #FCC;
+  border-radius: 8px;
+  padding: 0.65rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.signOutButton:hover {
+  background: #FEE;
+  border-color: #C33;
+}
+
 @media (max-width: 768px) {
-  .header {
-    padding: 1rem;
-  }
-
-  .headerContent {
-    flex-direction: column;
-    gap: 1rem;
-    align-items: flex-start;
-  }
-
-  .userSection {
-    width: 100%;
-    justify-content: space-between;
-  }
-
   .main {
     padding: 1rem;
+  }
+
+  .floatingSettings {
+    bottom: 1rem;
+    right: 1rem;
+  }
+
+  .settingsExpanded {
+    min-width: 260px;
   }
 }
