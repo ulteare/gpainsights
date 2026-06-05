@@ -78,10 +78,8 @@ def clean_text(raw: str) -> list[str]:
         stripped = line.strip()
         if not stripped:
             continue
-        # Skip lines that are purely boilerplate
         if stripped.lower() in boilerplate:
             continue
-        # Skip the repeated header lines containing name/student ID/dates
         if re.match(r"^(Name:|Date of Enrolment:|Date of Birth:)", stripped):
             continue
         lines.append(stripped)
@@ -116,7 +114,6 @@ def parse_course_line(line: str):
 
     Returns a dict or None if the line doesn't look like a course row.
     """
-    # Pattern: <name> <units_taken> / <units_earned> <grade> <grade_points|-|->
     m = re.match(
         r"^(.+?)\s+([\d.]+)\s*/\s*([\d.]+)\s+([A-Z][+\-]?|IP|I|P|W|-)\s+([\d.]+|-)\s*$",
         line,
@@ -124,15 +121,15 @@ def parse_course_line(line: str):
     if not m:
         return None
 
-    name        = m.group(1).strip()
-    units_taken = float(m.group(2))
-    units_earned= float(m.group(3))
-    grade       = m.group(4).strip()
-    gp_raw      = m.group(5).strip()
-    grade_points= float(gp_raw) if gp_raw != "-" else None
+    name         = m.group(1).strip()
+    units_taken  = float(m.group(2))
+    units_earned = float(m.group(3))
+    grade        = m.group(4).strip()
+    gp_raw       = m.group(5).strip()
+    grade_points = float(gp_raw) if gp_raw != "-" else None
 
-    in_progress = grade == "IP"
-    graded      = grade not in NON_GRADED
+    in_progress  = grade == "IP"
+    graded       = grade not in NON_GRADED
 
     return {
         "name":         name,
@@ -179,7 +176,6 @@ def parse_cumulative(lines: list[str]) -> dict:
             m = re.search(r"Course Units Accepted for Transfer\s*=\s*([\d.]+)", line)
             if m:
                 cumulative["units_transferred"] = float(m.group(1))
-            # Stop at grading system table
             if line.startswith("Grading System") or line.startswith("Student Status"):
                 break
     return cumulative
@@ -187,18 +183,16 @@ def parse_cumulative(lines: list[str]) -> dict:
 
 def semester_label(enrolment_year: int, academic_year_str: str, term_num: str) -> str:
     """
-    Convert '2022-23 Term 1' → '1.1', '2023-24 Term 2' → '2.2', etc.
-    Term 3A returns None (excluded from GPA mapping).
+    Convert '2022-23 Term 1' -> '1.1', '2023-24 Term 3' -> '2.3', etc.
+    Handles any term number including summer (Term 3) and special terms (Term 3A).
+    Alphanumeric suffixes like '3A' are normalised to their digit (3A -> 3).
     """
-    if not term_num.isdigit():
-        return None  # e.g. Term 3A
-
     start_year = int(academic_year_str.split("-")[0])
     year_num   = start_year - enrolment_year + 1
-    term_int   = int(term_num)
 
-    if term_int not in (1, 2):
-        return None  # Term 3/3A — short terms, skip
+    # Strip trailing letters so '3A' -> 3, '1' -> 1
+    term_digit = re.match(r"(\d+)", term_num)
+    term_int   = int(term_digit.group(1)) if term_digit else 0
 
     return f"{year_num}.{term_int}"
 
@@ -211,11 +205,11 @@ def parse_transcript(pdf_path: str) -> dict:
     raw   = extract_text(pdf_path)
     lines = clean_text(raw)
 
-    enrol_year = parse_enrolment_year(lines)
-    cumulative = parse_cumulative(lines)
+    enrol_year   = parse_enrolment_year(lines)
+    cumulative   = parse_cumulative(lines)
 
-    semesters  = []
-    current_term = None  # holds the term being built
+    semesters    = []
+    current_term = None
 
     i = 0
     while i < len(lines):
@@ -224,7 +218,6 @@ def parse_transcript(pdf_path: str) -> dict:
         # ── Term header ────────────────────────────────────────────────────
         term_match = parse_term_header(line)
         if term_match:
-            # Save previous term if exists
             if current_term:
                 semesters.append(current_term)
 
@@ -257,8 +250,7 @@ def parse_transcript(pdf_path: str) -> dict:
                 i += 1
                 continue
 
-            # Subtitle line (e.g. '- Wealth and Poverty', '- SMU-X')
-            # Append to the last course name
+            # Subtitle line — append to last course name
             if line.startswith("- ") and current_term["courses"]:
                 subtitle = line[2:].strip()
                 current_term["courses"][-1]["name"] += f" ({subtitle})"
@@ -268,7 +260,6 @@ def parse_transcript(pdf_path: str) -> dict:
             # Term total line
             if line.startswith("Term Total:"):
                 gpa = parse_term_total(line)
-                # Only store non-zero GPAs (Term 3A and IP semesters return 0.00)
                 if gpa and gpa > 0:
                     current_term["term_gpa"] = gpa
                 i += 1
@@ -299,17 +290,18 @@ def parse_transcript(pdf_path: str) -> dict:
     if current_term:
         semesters.append(current_term)
 
-    # ── Post-process: filter out terms with no label and no GPA relevance ──
-    # Keep all terms for completeness but flag skipped ones
+    # ── Post-process: determine chart inclusion ────────────────────────────
+    # A term is included in the GPA chart if it has at least one graded course
+    # (i.e. a course where grade contributes to GPA). LOA and exchange terms
+    # with no graded courses are excluded. A term with graded summer modules
+    # is included regardless of term number.
     for sem in semesters:
-        if sem["label"] is None:
-            sem["included_in_gpa_chart"] = False
-        else:
-            sem["included_in_gpa_chart"] = (
-                sem["type"] not in ("leave_of_absence", "exchange")
-                and sem["term_gpa"] is not None
-                and sem["term_gpa"] > 0
-            )
+        has_graded_courses = any(c["graded"] for c in sem["courses"])
+        sem["included_in_gpa_chart"] = (
+            has_graded_courses
+            and sem["term_gpa"] is not None
+            and sem["term_gpa"] > 0
+        )
 
     return {
         "semesters":  semesters,
@@ -323,10 +315,7 @@ def parse_transcript(pdf_path: str) -> dict:
 
 def to_chart_data(parsed: dict) -> list[dict]:
     """
-    Returns a list of { sem, label, term_gpa, courses, note } objects
-    for only the semesters that should appear on the GPA chart.
-
-    'note' flags Exchange/Internship terms (label exists but type is exchange).
+    Returns only the semesters that appear on the GPA chart, in order.
     """
     chart = []
     for sem in parsed["semesters"]:
