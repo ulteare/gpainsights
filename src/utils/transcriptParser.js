@@ -1,7 +1,10 @@
 import * as pdfjsLib from 'pdfjs-dist';
 
-// Configure PDF.js worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+// Configure PDF.js worker - use the bundled worker from node_modules
+pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.min.mjs',
+  import.meta.url
+).toString();
 
 // Grade mappings
 const GRADE_POINTS = {
@@ -147,6 +150,35 @@ function parseCumulative(lines) {
   return cumulative;
 }
 
+// Validate if PDF is an SMU transcript
+function validateTranscript(rawText, semesters, cumulative) {
+  const text = rawText.toLowerCase();
+
+  // Check for SMU-specific markers
+  const hasSMUHeader = text.includes('singapore management university');
+  const hasTranscriptMarkers = text.includes('term') && text.includes('grade');
+
+  // Check if we found actual data
+  const hasValidSemesters = semesters.length > 0 && semesters.some(s => s.courses.length > 0);
+  const hasValidCumulative = cumulative && cumulative.gpa !== undefined;
+
+  if (!hasSMUHeader) {
+    throw new Error('This does not appear to be an SMU transcript. Please upload your official SMU academic transcript.');
+  }
+
+  if (!hasTranscriptMarkers) {
+    throw new Error('Unable to find transcript data in this PDF. Please ensure you uploaded an official SMU academic transcript.');
+  }
+
+  if (!hasValidSemesters && !hasValidCumulative) {
+    throw new Error('No academic data found in this transcript. Please check that you uploaded the correct file.');
+  }
+
+  if (!hasValidSemesters) {
+    throw new Error('No semester data found. Please ensure this is a valid SMU transcript with grades.');
+  }
+}
+
 // Main parser function
 export async function parseTranscript(file) {
   try {
@@ -235,6 +267,9 @@ export async function parseTranscript(file) {
       const hasGradedCourses = sem.courses.some(c => c.graded);
       sem.included_in_gpa_chart = hasGradedCourses && sem.term_gpa !== null && sem.term_gpa > 0;
     }
+
+    // Validate before returning
+    validateTranscript(rawText, semesters, cumulative);
 
     // Generate chart data
     const chartData = semesters
