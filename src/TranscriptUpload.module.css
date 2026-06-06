@@ -245,6 +245,59 @@
   min-width: 70px;
 }
 
+.coursesTable {
+  margin-top: 12px;
+  width: 100%;
+}
+
+.coursesTable table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.coursesTable th {
+  text-align: left;
+  padding: 8px 12px;
+  background: #FAF8F5;
+  color: #5C4F3D;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid #E8E3DC;
+}
+
+.coursesTable td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #F5F2ED;
+  color: #5C4F3D;
+}
+
+.coursesTable tbody tr:hover {
+  background: #FDFCFB;
+}
+
+.gradeSelect {
+  padding: 4px 8px;
+  border: 1px solid #D4CEC4;
+  border-radius: 4px;
+  background: white;
+  color: #5C4F3D;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.gradeSelect:hover {
+  border-color: #C4BDB0;
+}
+
+.gradeSelect:focus {
+  outline: none;
+  border-color: #8C7B68;
+}
+
 .gpaInput {
   width: 70px;
   padding: 6px 10px;

@@ -132,42 +132,67 @@ export const TranscriptUpload = ({ onSuccess }) => {
     }
   };
 
-  const handleEditSemester = (index, field, value) => {
-    const updated = { ...parsedData };
-    updated.chart_data[index][field] = value;
+  const recalculateGPAs = (chartData) => {
+    return chartData.map((semester, semIndex) => {
+      // Calculate term GPA from courses (skip for exchange/internship semesters)
+      let termGPA = semester.term_gpa;
+      if (semester.note !== 'Exchange / Internship') {
+        let termGradePoints = 0;
+        let termUnits = 0;
 
-    // Recalculate all cumulative GPAs based on term GPAs and credit units
-    updated.chart_data = updated.chart_data.map((semester, semIndex) => {
-      // Get all semesters up to and including this one
-      const semestersUpToThis = updated.chart_data.slice(0, semIndex + 1);
+        semester.courses.forEach(course => {
+          if (course.graded && course.grade_points !== null) {
+            termGradePoints += course.grade_points * course.units_earned;
+            termUnits += course.units_earned;
+          }
+        });
 
-      // Calculate cumulative GPA using term GPAs weighted by credit-bearing units
-      let totalWeightedGPA = 0;
+        termGPA = termUnits > 0 ? parseFloat((termGradePoints / termUnits).toFixed(2)) : 0;
+      }
+
+      // Calculate cumulative GPA from all semesters up to this one
+      const semestersUpToThis = chartData.slice(0, semIndex + 1);
+      let totalGradePoints = 0;
       let totalUnits = 0;
 
       semestersUpToThis.forEach(sem => {
-        // Count only credit-bearing (graded) courses
-        const creditUnits = sem.courses.reduce((sum, course) => {
+        sem.courses.forEach(course => {
           if (course.graded && course.grade_points !== null) {
-            return sum + course.units_earned;
+            totalGradePoints += course.grade_points * course.units_earned;
+            totalUnits += course.units_earned;
           }
-          return sum;
-        }, 0);
-
-        if (creditUnits > 0) {
-          totalWeightedGPA += sem.term_gpa * creditUnits;
-          totalUnits += creditUnits;
-        }
+        });
       });
 
-      const cumulativeGPA = totalUnits > 0 ? totalWeightedGPA / totalUnits : 0;
+      const cumulativeGPA = totalUnits > 0 ? parseFloat((totalGradePoints / totalUnits).toFixed(2)) : 0;
 
       return {
         ...semester,
-        cumulative_gpa: parseFloat(cumulativeGPA.toFixed(2)),
+        term_gpa: termGPA,
+        cumulative_gpa: cumulativeGPA,
       };
     });
+  };
 
+  const handleEditCourse = (semesterIndex, courseIndex, field, value) => {
+    const updated = { ...parsedData };
+    updated.chart_data[semesterIndex].courses[courseIndex][field] = value;
+
+    // Recalculate grade_points if grade changed
+    if (field === 'grade') {
+      const gradePoints = {
+        'A+': 4.3, 'A': 4.0, 'A-': 3.7,
+        'B+': 3.3, 'B': 3.0, 'B-': 2.7,
+        'C+': 2.3, 'C': 2.0, 'C-': 1.7,
+        'D+': 1.3, 'D': 1.0, 'F': 0.0,
+      };
+      const course = updated.chart_data[semesterIndex].courses[courseIndex];
+      course.grade_points = gradePoints[value] ?? null;
+      course.graded = !['P', 'IP', 'I', 'W', '-'].includes(value);
+    }
+
+    // Recalculate all GPAs
+    updated.chart_data = recalculateGPAs(updated.chart_data);
     setParsedData(updated);
   };
 
@@ -266,13 +291,7 @@ export const TranscriptUpload = ({ onSuccess }) => {
                     {semester.note !== 'Exchange / Internship' && (
                       <div className={styles.gpaItem}>
                         <label>Term GPA</label>
-                        <input
-                          type="number"
-                          step="0.01"
-                          value={semester.term_gpa}
-                          onChange={(e) => handleEditSemester(index, 'term_gpa', parseFloat(e.target.value))}
-                          className={styles.gpaInput}
-                        />
+                        <span className={styles.gpaValue}>{semester.term_gpa}</span>
                       </div>
                     )}
                     <div className={styles.gpaItem}>
@@ -281,9 +300,52 @@ export const TranscriptUpload = ({ onSuccess }) => {
                     </div>
                   </div>
                 </div>
-                <div className={styles.courseCount}>
-                  {semester.courses.length} courses
-                </div>
+
+                {semester.courses.length > 0 && (
+                  <div className={styles.coursesTable}>
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Course Name</th>
+                          <th>Units</th>
+                          <th>Grade</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {semester.courses.map((course, courseIndex) => (
+                          <tr key={courseIndex}>
+                            <td>{course.name}</td>
+                            <td>{course.units_earned}</td>
+                            <td>
+                              <select
+                                value={course.grade}
+                                onChange={(e) => handleEditCourse(index, courseIndex, 'grade', e.target.value)}
+                                className={styles.gradeSelect}
+                              >
+                                <option value="A+">A+</option>
+                                <option value="A">A</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B">B</option>
+                                <option value="B-">B-</option>
+                                <option value="C+">C+</option>
+                                <option value="C">C</option>
+                                <option value="C-">C-</option>
+                                <option value="D+">D+</option>
+                                <option value="D">D</option>
+                                <option value="F">F</option>
+                                <option value="P">P</option>
+                                <option value="IP">IP</option>
+                                <option value="I">I</option>
+                                <option value="W">W</option>
+                              </select>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </div>
             ))}
           </div>
