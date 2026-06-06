@@ -13,6 +13,7 @@ import {
 import { useSemesters } from './hooks/useSemesters';
 import { useUserSettings } from './hooks/useUserSettings';
 import SemesterManager from './components/SemesterManager';
+import { TranscriptUpload } from './TranscriptUpload';
 import styles from './GPATracker.module.css';
 
 // Register ChartJS components
@@ -31,6 +32,8 @@ const GPATracker = () => {
   const { semesters: data, loading, error, refetch } = useSemesters();
   const { settings } = useUserSettings();
   const [showManager, setShowManager] = useState(false);
+  const [showUpload, setShowUpload] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   useEffect(() => {
@@ -313,12 +316,34 @@ const GPATracker = () => {
           <p>Cumulative GPA · All Semesters</p>
         </div>
         <div className={styles.headerRight}>
-          <button
-            onClick={() => setShowManager(true)}
-            className={styles.settingsButton}
-          >
-            Add/Edit Semesters
-          </button>
+          <div className={styles.buttonGroup}>
+            <button
+              onClick={() => setShowManager(true)}
+              className={styles.settingsButton}
+            >
+              Add/Edit Semesters
+            </button>
+            <div className={styles.uploadButtonWrapper}>
+              <button
+                onClick={() => setShowUpload(true)}
+                className={styles.uploadButton}
+              >
+                Upload Transcript
+              </button>
+              <div
+                className={styles.infoIconWrapper}
+                onMouseEnter={() => setShowTooltip(true)}
+                onMouseLeave={() => setShowTooltip(false)}
+              >
+                <span className={styles.infoIcon}>ⓘ</span>
+                {showTooltip && (
+                  <div className={styles.tooltip}>
+                    Upload your academic transcript for instant insights
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
           <span className={styles.badge}>
             Out of {settings?.grade_scale || 4.0}
           </span>
@@ -376,6 +401,15 @@ const GPATracker = () => {
           onClose={() => setShowManager(false)}
           onUpdate={refetch}
         />
+      )}
+
+      {showUpload && (
+        <div className={styles.overlay} onClick={() => setShowUpload(false)}>
+          <div className={styles.uploadModal} onClick={(e) => e.stopPropagation()}>
+            <button onClick={() => setShowUpload(false)} className={styles.closeButton}>✕</button>
+            <TranscriptUpload onSuccess={() => setShowUpload(false)} />
+          </div>
+        </div>
       )}
     </>
   );

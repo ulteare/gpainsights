@@ -1,0 +1,153 @@
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px;
+  font-family: 'Jost', sans-serif;
+}
+
+.container h2 {
+  font-size: 28px;
+  font-weight: 600;
+  color: #2C2416;
+  margin-bottom: 16px;
+}
+
+.instructions {
+  background: #FAF8F5;
+  border: 1px solid #E5DFD3;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+}
+
+.instructions p {
+  margin: 0;
+  color: #5C4F3D;
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+.dropZone {
+  border: 2px dashed #D9CDB8;
+  border-radius: 12px;
+  padding: 48px 32px;
+  text-align: center;
+  background: #FEFDFB;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.dropZone:hover {
+  border-color: #8C7B68;
+  background: #FAF8F5;
+}
+
+.dropZone.dragActive {
+  border-color: #5F3A12;
+  background: #F5F0E8;
+  border-width: 3px;
+}
+
+.uploadIcon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.dropText p {
+  margin: 8px 0;
+  color: #2C2416;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.orText {
+  color: #8C7B68 !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+}
+
+.fileInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.fileName {
+  font-size: 16px;
+  font-weight: 500;
+  color: #2C2416;
+  max-width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fileSize {
+  font-size: 14px;
+  color: #8C7B68;
+}
+
+.importButton {
+  background: #5F3A12;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 32px;
+  font-family: 'Jost', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+  display: block;
+}
+
+.importButton:hover:not(:disabled) {
+  background: #4A2D0E;
+}
+
+.importButton:disabled {
+  background: #8C7B68;
+  cursor: wait;
+}
+
+.error {
+  background: #FFF5F5;
+  border: 1px solid #FEB2B2;
+  border-radius: 6px;
+  padding: 12px 16px;
+  color: #C53030;
+  font-size: 14px;
+  margin-top: 16px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+  }
+
+  .container h2 {
+    font-size: 24px;
+  }
+
+  .dropZone {
+    padding: 32px 20px;
+  }
+
+  .uploadIcon {
+    font-size: 40px;
+  }
+
+  .dropText p {
+    font-size: 14px;
+  }
+
+  .importButton {
+    width: 100%;
+    max-width: 100%;
+  }
+}
