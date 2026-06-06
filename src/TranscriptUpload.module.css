@@ -125,6 +125,199 @@
   margin-top: 16px;
 }
 
+/* Preview Section */
+.previewSection {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.previewSection h3 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #2C2416;
+  margin-bottom: 8px;
+}
+
+.previewNote {
+  color: #5C4F3D;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.statsPreview {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.statItem {
+  background: #FAF8F5;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #E5DFD3;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.statItem span {
+  font-size: 13px;
+  color: #8C7B68;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.statItem strong {
+  font-size: 24px;
+  color: #2C2416;
+  font-weight: 600;
+}
+
+.semestersPreview h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2C2416;
+  margin-bottom: 16px;
+}
+
+.semesterPreviewItem {
+  background: white;
+  border: 1px solid #E5DFD3;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.semesterHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.semesterLabel {
+  font-size: 15px;
+  font-weight: 600;
+  color: #2C2416;
+}
+
+.semesterNote {
+  font-weight: 400;
+  color: #8B7355;
+  font-size: 0.9em;
+}
+
+.gpaGroup {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.gpaItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.gpaItem label {
+  font-size: 11px;
+  color: #8C7B68;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+}
+
+.gpaValue {
+  font-size: 14px;
+  font-weight: 600;
+  color: #5C4F3D;
+  padding: 6px 10px;
+  background: #FAF8F5;
+  border-radius: 4px;
+  text-align: right;
+  min-width: 70px;
+}
+
+.gpaInput {
+  width: 70px;
+  padding: 6px 10px;
+  border: 1px solid #D9CDB8;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2C2416;
+  text-align: right;
+}
+
+.gpaInput:focus {
+  outline: none;
+  border-color: #5F3A12;
+}
+
+.courseCount {
+  font-size: 13px;
+  color: #8C7B68;
+}
+
+.previewActions {
+  display: flex;
+  gap: 12px;
+  margin-top: 32px;
+  margin-bottom: 16px;
+}
+
+.cancelButton,
+.confirmButton {
+  flex: 1;
+  padding: 14px 24px;
+  font-family: 'Jost', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.cancelButton {
+  background: transparent;
+  border: 1px solid #D9CDB8;
+  color: #5C4F3D;
+}
+
+.cancelButton:hover {
+  background: #FAF8F5;
+}
+
+.confirmButton {
+  background: #5F3A12;
+  color: white;
+}
+
+.confirmButton:hover:not(:disabled) {
+  background: #4A2D0E;
+}
+
+.confirmButton:disabled {
+  background: #8C7B68;
+  cursor: wait;
+}
+
+.warningNote {
+  text-align: center;
+  color: #C53030;
+  font-size: 13px;
+  font-weight: 500;
+  margin-top: 16px;
+}
+
 @media (max-width: 768px) {
   .container {
     padding: 16px;
@@ -149,5 +342,17 @@
   .importButton {
     width: 100%;
     max-width: 100%;
+  }
+
+  .statsPreview {
+    grid-template-columns: 1fr;
+  }
+
+  .statItem strong {
+    font-size: 20px;
+  }
+
+  .previewActions {
+    flex-direction: column;
   }
 }

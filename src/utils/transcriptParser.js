@@ -25,8 +25,34 @@ async function extractTextFromPDF(file) {
   for (let i = 1; i <= pdf.numPages; i++) {
     const page = await pdf.getPage(i);
     const textContent = await page.getTextContent();
-    const pageText = textContent.items.map(item => item.str).join(' ');
-    fullText += pageText + '\n';
+
+    // Build text preserving line breaks based on Y position
+    let lastY = null;
+    const lines = [];
+    let currentLine = '';
+
+    for (const item of textContent.items) {
+      const y = item.transform[5];
+
+      // New line if Y position changed significantly
+      if (lastY !== null && Math.abs(y - lastY) > 5) {
+        if (currentLine.trim()) {
+          lines.push(currentLine.trim());
+        }
+        currentLine = item.str;
+      } else {
+        currentLine += (currentLine && item.str ? ' ' : '') + item.str;
+      }
+
+      lastY = y;
+    }
+
+    // Add last line
+    if (currentLine.trim()) {
+      lines.push(currentLine.trim());
+    }
+
+    fullText += lines.join('\n') + '\n';
   }
 
   return fullText;
@@ -181,14 +207,18 @@ function validateTranscript(rawText, semesters, cumulative) {
 
 // Main parser function
 export async function parseTranscript(file) {
+  let rawText = '';
+  let lines = [];
+  let semesters = [];
+  let cumulative = {};
+
   try {
-    const rawText = await extractTextFromPDF(file);
-    const lines = cleanText(rawText);
+    rawText = await extractTextFromPDF(file);
+    lines = cleanText(rawText);
 
     const enrolYear = parseEnrolmentYear(lines);
-    const cumulative = parseCumulative(lines);
+    cumulative = parseCumulative(lines);
 
-    const semesters = [];
     let currentTerm = null;
 
     for (let i = 0; i < lines.length; i++) {
@@ -221,7 +251,9 @@ export async function parseTranscript(file) {
           continue;
         }
 
-        if (line.includes('International Student Exchange Programme')) {
+        if (line.includes('International Student Exchange Programme') ||
+            line.includes('Exchange Programme') ||
+            line.includes('Internship')) {
           currentTerm.type = 'exchange';
           continue;
         }
@@ -265,7 +297,12 @@ export async function parseTranscript(file) {
     // Determine chart inclusion
     for (const sem of semesters) {
       const hasGradedCourses = sem.courses.some(c => c.graded);
-      sem.included_in_gpa_chart = hasGradedCourses && sem.term_gpa !== null && sem.term_gpa > 0;
+      const isExchangeOrInternship = sem.type === 'exchange' || sem.type === 'leave_of_absence';
+
+      // Include if: (has graded courses AND has term GPA) OR is exchange/internship/LOA
+      sem.included_in_gpa_chart =
+        isExchangeOrInternship ||
+        (hasGradedCourses && sem.term_gpa !== null && sem.term_gpa > 0);
     }
 
     // Validate before returning
@@ -275,7 +312,7 @@ export async function parseTranscript(file) {
     const chartData = semesters
       .filter(sem => sem.included_in_gpa_chart)
       .map(sem => {
-        const note = sem.type === 'exchange' ? 'Exchange / Internship' : '';
+        const note = (sem.type === 'exchange' || sem.type === 'leave_of_absence') ? 'Exchange / Internship' : '';
         const [year, term] = sem.label.split('.');
         return {
           sem: sem.label,
@@ -294,6 +331,10 @@ export async function parseTranscript(file) {
 
   } catch (error) {
     console.error('Error parsing transcript:', error);
+    console.log('Debug - Raw text preview:', rawText?.substring(0, 500));
+    console.log('Debug - Lines count:', lines?.length);
+    console.log('Debug - Semesters found:', semesters?.length);
+    console.log('Debug - Cumulative data:', cumulative);
     throw new Error(`Failed to parse transcript: ${error.message}`);
   }
 }

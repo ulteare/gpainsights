@@ -407,7 +407,12 @@ const GPATracker = () => {
         <div className={styles.overlay} onClick={() => setShowUpload(false)}>
           <div className={styles.uploadModal} onClick={(e) => e.stopPropagation()}>
             <button onClick={() => setShowUpload(false)} className={styles.closeButton}>✕</button>
-            <TranscriptUpload onSuccess={() => setShowUpload(false)} />
+            <TranscriptUpload
+              onSuccess={() => {
+                setShowUpload(false);
+                refetch(); // Refresh chart data
+              }}
+            />
           </div>
         </div>
       )}
