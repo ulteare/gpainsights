@@ -38,6 +38,8 @@ export const useUserSettings = () => {
             user_id: user.id,
             school: 'SMU',
             grade_scale: 4.0,
+            full_name: user.user_metadata?.full_name || null,
+            email: user.email || null,
           })
           .select()
           .single();
@@ -45,7 +47,27 @@ export const useUserSettings = () => {
         if (insertError) throw insertError;
         setSettings(newSettings);
       } else {
-        setSettings(data);
+        // Update name/email if they've changed
+        if (data.full_name !== user.user_metadata?.full_name || data.email !== user.email) {
+          const { data: updatedData, error: updateError } = await supabase
+            .from('user_settings')
+            .update({
+              full_name: user.user_metadata?.full_name || data.full_name,
+              email: user.email || data.email,
+            })
+            .eq('user_id', user.id)
+            .select()
+            .single();
+
+          if (updateError) {
+            console.error('Error updating user info:', updateError);
+            setSettings(data);
+          } else {
+            setSettings(updatedData);
+          }
+        } else {
+          setSettings(data);
+        }
       }
     } catch (err) {
       console.error('Error fetching user settings:', err);
