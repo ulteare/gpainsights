@@ -303,6 +303,35 @@
   justify-content: center;
   padding: 4rem 2rem;
   text-align: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.instructionsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  width: 100%;
+  margin-top: 4rem;
+}
+
+.instructionStep {
+  text-align: left;
+}
+
+.instructionStep p {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.9rem;
+  color: #2C2417;
+  line-height: 1.5;
+  margin: 0 0 1rem 0;
+  min-height: 3rem;
+}
+
+.instructionStep img {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid #E0D6C8;
 }
 
 .emptyIcon {
@@ -506,5 +535,16 @@
 
   .emptyState {
     padding: 3rem 1rem;
+  }
+
+  .instructionsGrid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .instructionStep p {
+    font-size: 0.85rem;
+    min-height: auto;
   }
 }
