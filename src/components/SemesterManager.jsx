@@ -210,6 +210,7 @@ const SemesterManager = ({ semesters, onClose, onUpdate }) => {
               onDeleteSemester={handleDeleteSemester}
               showStats={false}
               showTitle={false}
+              fullWidthMobile={true}
             />
 
             <div className={styles.pageActions}>

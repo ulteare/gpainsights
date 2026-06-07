@@ -11,7 +11,8 @@ export const SemesterEditor = ({
   onAddSemester,
   onDeleteSemester,
   showStats = true,
-  showTitle = true
+  showTitle = true,
+  fullWidthMobile = false
 }) => {
   const [draggedSemesterIndex, setDraggedSemesterIndex] = useState(null);
 
@@ -163,7 +164,7 @@ export const SemesterEditor = ({
   };
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} ${fullWidthMobile ? styles.fullWidthMobile : ''}`}>
       {showStats && (
         <div className={styles.statsPreview}>
           <div className={styles.statItem}>

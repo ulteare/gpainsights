@@ -316,43 +316,43 @@
     display: none;
   }
 
-  .container {
+  .fullWidthMobile.container {
     margin-left: -0.75rem;
     margin-right: -0.75rem;
     width: calc(100% + 1.5rem);
   }
 
-  .semesterPreviewItem {
+  .fullWidthMobile .semesterPreviewItem {
     padding: 12px;
     border-left: none;
     border-right: none;
     border-radius: 6px;
   }
 
-  .coursesTable {
+  .fullWidthMobile .coursesTable {
     overflow-x: auto;
   }
 
-  .coursesTable table {
+  .fullWidthMobile .coursesTable table {
     font-size: 12px;
   }
 
-  .coursesTable th,
-  .coursesTable td {
+  .fullWidthMobile .coursesTable th,
+  .fullWidthMobile .coursesTable td {
     padding: 6px 8px;
   }
 
-  .courseNameInput {
+  .fullWidthMobile .courseNameInput {
     font-size: 12px;
     min-width: 120px;
   }
 
-  .unitsInput {
+  .fullWidthMobile .unitsInput {
     width: 50px;
     font-size: 12px;
   }
 
-  .gradeSelect {
+  .fullWidthMobile .gradeSelect {
     font-size: 12px;
   }
 }

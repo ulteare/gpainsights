@@ -7,7 +7,7 @@
 
 .container h2 {
   font-size: 28px;
-  font-weight: 600;
+  font-weight: 500;
   color: #2C2416;
   margin-bottom: 16px;
 }
@@ -90,14 +90,14 @@
 }
 
 .importButton {
-  background: #5F3A12;
-  color: white;
+  background: #8C6E4B;
+  color: #FAF8F5;
   border: none;
   border-radius: 8px;
   padding: 14px 32px;
   font-family: 'Jost', sans-serif;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   transition: background 0.2s;
   width: 100%;
@@ -107,7 +107,7 @@
 }
 
 .importButton:hover:not(:disabled) {
-  background: #4A2D0E;
+  background: #6B4E2A;
 }
 
 .importButton:disabled {
@@ -137,7 +137,7 @@
 
 .previewSection h3 {
   font-size: 22px;
-  font-weight: 600;
+  font-weight: 500;
   color: #2C2416;
   margin-bottom: 8px;
 }
@@ -459,8 +459,8 @@
   flex: 1;
   padding: 14px 24px;
   font-family: 'Jost', sans-serif;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 500;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s;
@@ -469,21 +469,22 @@
 
 .cancelButton {
   background: transparent;
-  border: 1px solid #D9CDB8;
-  color: #5C4F3D;
+  border: 1px solid #E0D6C8;
+  color: #8C7B68;
 }
 
 .cancelButton:hover {
-  background: #FAF8F5;
+  background: #F0E6D6;
+  border-color: #8C6E4B;
 }
 
 .confirmButton {
-  background: #5F3A12;
-  color: white;
+  background: #8C6E4B;
+  color: #FAF8F5;
 }
 
 .confirmButton:hover:not(:disabled) {
-  background: #4A2D0E;
+  background: #6B4E2A;
 }
 
 .confirmButton:disabled {
