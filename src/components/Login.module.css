@@ -1,164 +1,263 @@
-.loginContainer {
+.container {
   min-height: 100vh;
+  background: #FAF8F5;
   display: flex;
-  align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #FAF8F5 0%, #F5EFE6 100%);
-  padding: 2rem;
+  padding: 4rem 2rem;
 }
 
-.loginCard {
-  background: #FFFFFF;
-  border-radius: 20px;
-  box-shadow: 0 10px 40px rgba(44, 36, 23, 0.1);
-  max-width: 900px;
+.content {
+  max-width: 600px;
   width: 100%;
-  overflow: hidden;
+  text-align: left;
 }
 
-.header {
-  background: linear-gradient(135deg, #442b0d 0%, #8C6E4B 100%);
-  color: #FAF8F5;
-  padding: 3rem 2rem;
-  text-align: center;
+.hero {
+  margin-bottom: 6rem;
+  text-align: left;
+  padding: 3rem 0;
 }
 
-.header h1 {
+.title {
   font-family: 'Playfair Display', serif;
-  font-size: 2.5rem;
-  font-weight: 500;
-  margin: 0 0 0.5rem 0;
-}
-
-.header p {
-  font-family: 'Jost', sans-serif;
-  font-size: 1rem;
-  opacity: 0.9;
-  margin: 0;
-}
-
-.demoSection {
-  padding: 2rem;
-}
-
-.features {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 2rem;
-  margin-bottom: 1rem;
-}
-
-.feature {
-  text-align: center;
-}
-
-.icon {
-  font-size: 2.5rem;
-  display: block;
-  margin-bottom: 0.5rem;
-}
-
-.feature h3 {
-  font-family: 'Jost', sans-serif;
-  font-size: 1.1rem;
+  font-size: 6rem;
   font-weight: 500;
   color: #2C2417;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 1.5rem 0;
+  line-height: 1;
+  letter-spacing: -0.02em;
 }
 
-.feature p {
+.subtitle {
   font-family: 'Jost', sans-serif;
-  font-size: 0.9rem;
+  font-size: 1.5rem;
   color: #8C7B68;
+  font-weight: 400;
   margin: 0;
-  line-height: 1.5;
 }
 
-.loginSection {
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  border-top: 1px solid #E0D6C8;
+.valueProps {
+  margin-bottom: 6rem;
 }
 
-.googleButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  background: #FFFFFF;
-  border: 2px solid #E0D6C8;
-  border-radius: 12px;
-  padding: 1rem 2rem;
+.valueProps h2 {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #5C4F3D;
+  margin: 0 0 2.5rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.valueProps ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3rem;
+  counter-reset: item;
+}
+
+.valueProps li {
   font-family: 'Jost', sans-serif;
   font-size: 1rem;
+  color: #2C2417;
+  position: relative;
+  line-height: 1.6;
+  padding-top: 3rem;
+}
+
+.valueProps li::before {
+  content: counter(item);
+  counter-increment: item;
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem;
+  font-weight: 400;
+  color: #E0D6C8;
+  line-height: 1;
+}
+
+.instructions {
+  margin-bottom: 4rem;
+}
+
+.instructions h2 {
+  font-family: 'Jost', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #5C4F3D;
+  margin: 0 0 1.5rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.instructions ol {
+  list-style: none;
+  counter-reset: step-counter;
+  padding: 0;
+  margin: 0;
+}
+
+.instructions li {
+  counter-increment: step-counter;
+  margin-bottom: 2.5rem;
+  position: relative;
+}
+
+.instructions li::before {
+  content: counter(step-counter);
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #8C6E4B;
+  position: absolute;
+  left: -2.5rem;
+  top: 0;
+}
+
+.instructions p {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.95rem;
+  color: #2C2417;
+  margin: 0 0 1rem 0;
+  line-height: 1.6;
+}
+
+.instructions img {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid #E0D6C8;
+  margin-top: 0.75rem;
+}
+
+.loginButton {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  padding: 0.75rem 1.5rem;
+  background: #FFFFFF;
+  border: 1px solid #E0D6C8;
+  border-radius: 8px;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.95rem;
   font-weight: 500;
   color: #2C2417;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
   transition: all 0.2s ease;
-  min-width: 280px;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(44, 36, 23, 0.08);
 }
 
-.googleButton:hover {
+.loginButton:hover:not(:disabled) {
   background: #FAF8F5;
   border-color: #8C6E4B;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(44, 36, 23, 0.1);
+  box-shadow: 0 4px 12px rgba(44, 36, 23, 0.12);
 }
 
-.googleButton:active {
-  transform: translateY(0);
-}
-
-.googleButton:disabled {
+.loginButton:disabled {
   opacity: 0.6;
   cursor: not-allowed;
-  transform: none;
 }
 
 .googleIcon {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
 }
 
-.error {
+.errorFixed {
+  position: fixed;
+  bottom: 5.5rem;
+  right: 2rem;
   background: #FEE;
   border: 1px solid #FCC;
   color: #C33;
   padding: 0.75rem 1rem;
-  border-radius: 8px;
+  border-radius: 6px;
   font-family: 'Jost', sans-serif;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   text-align: center;
-  max-width: 400px;
-}
-
-.footer {
-  padding: 1.5rem 2rem;
-  background: #FAF8F5;
-  text-align: center;
-}
-
-.footer p {
-  font-family: 'Jost', sans-serif;
-  font-size: 0.8rem;
-  color: #8C7B68;
-  margin: 0;
+  max-width: 300px;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(44, 36, 23, 0.08);
 }
 
 @media (max-width: 768px) {
-  .header h1 {
-    font-size: 2rem;
+  .container {
+    padding: 2rem 1.5rem;
   }
 
-  .features {
-    grid-template-columns: 1fr;
+  .loginButton {
+    bottom: 1.5rem;
+    right: 1.5rem;
+    left: 1.5rem;
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .googleIcon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .errorFixed {
+    bottom: 5.5rem;
+    right: 1.5rem;
+    left: 1.5rem;
+    max-width: none;
+  }
+
+  .hero {
+    padding: 2rem 0;
+    margin-bottom: 4rem;
+  }
+
+  .title {
+    font-size: 3rem;
+  }
+
+  .subtitle {
+    font-size: 1.125rem;
+  }
+
+  .valueProps {
+    margin-bottom: 4rem;
+  }
+
+  .valueProps ul {
+    grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
   }
 
-  .googleButton {
-    min-width: 100%;
+  .valueProps li {
+    font-size: 0.875rem;
+    padding-top: 2.5rem;
+  }
+
+  .valueProps li::before {
+    font-size: 2rem;
+  }
+
+  .instructions {
+    margin-bottom: 3rem;
+  }
+
+  .instructions li::before {
+    position: static;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .instructions li {
+    margin-bottom: 2rem;
   }
 }
