@@ -183,11 +183,17 @@ const SemesterManager = ({ semesters, onClose, onUpdate }) => {
 
   return (
     <div className={styles.pageContainer}>
+      <button onClick={onClose} className={styles.backButton} title="Back to main page">
+        ← Back
+      </button>
+
       <div className={styles.pageHeader}>
-        <button onClick={onClose} className={styles.backButton} title="Back to main page">
-          ← Back
-        </button>
-        <h1>Manage Semesters</h1>
+        <h1>Your Semesters</h1>
+        <ul className={styles.description}>
+          <li>Edit existing grades and semesters</li>
+          <li>Add new semesters</li>
+          <li>Predict your GPA — cumulative GPA auto-calculates as you make changes</li>
+        </ul>
       </div>
 
       <div className={styles.pageContent}>
@@ -203,6 +209,7 @@ const SemesterManager = ({ semesters, onClose, onUpdate }) => {
               onAddSemester={handleAddSemester}
               onDeleteSemester={handleDeleteSemester}
               showStats={false}
+              showTitle={false}
             />
 
             <div className={styles.pageActions}>

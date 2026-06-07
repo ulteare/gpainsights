@@ -310,3 +310,49 @@
   border-color: #8C7B68;
   color: #5C4F3D;
 }
+
+@media (max-width: 768px) {
+  .semesterNote {
+    display: none;
+  }
+
+  .container {
+    margin-left: -0.75rem;
+    margin-right: -0.75rem;
+    width: calc(100% + 1.5rem);
+  }
+
+  .semesterPreviewItem {
+    padding: 12px;
+    border-left: none;
+    border-right: none;
+    border-radius: 6px;
+  }
+
+  .coursesTable {
+    overflow-x: auto;
+  }
+
+  .coursesTable table {
+    font-size: 12px;
+  }
+
+  .coursesTable th,
+  .coursesTable td {
+    padding: 6px 8px;
+  }
+
+  .courseNameInput {
+    font-size: 12px;
+    min-width: 120px;
+  }
+
+  .unitsInput {
+    width: 50px;
+    font-size: 12px;
+  }
+
+  .gradeSelect {
+    font-size: 12px;
+  }
+}

@@ -10,7 +10,8 @@ export const SemesterEditor = ({
   onDataChange,
   onAddSemester,
   onDeleteSemester,
-  showStats = true
+  showStats = true,
+  showTitle = true
 }) => {
   const [draggedSemesterIndex, setDraggedSemesterIndex] = useState(null);
 
@@ -181,7 +182,7 @@ export const SemesterEditor = ({
       )}
 
       <div className={styles.semestersPreview}>
-        <h4>Semesters</h4>
+        {showTitle && <h4>Semesters</h4>}
         {semestersData.map((semester, index) => (
           <div
             key={index}
