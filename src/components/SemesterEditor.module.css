@@ -1,0 +1,283 @@
+.container {
+  width: 100%;
+}
+
+.statsPreview {
+  display: flex;
+  gap: 24px;
+  padding: 16px;
+  background: #FAF8F5;
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.statItem span {
+  font-size: 12px;
+  color: #8C7B68;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+}
+
+.statItem strong {
+  font-size: 20px;
+  color: #2C2416;
+}
+
+.semestersPreview {
+  margin-bottom: 16px;
+}
+
+.semestersPreview h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2C2416;
+  margin-bottom: 16px;
+}
+
+.semesterPreviewItem {
+  background: white;
+  border: 1px solid #E5DFD3;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+  cursor: move;
+  transition: all 0.2s;
+}
+
+.semesterPreviewItem:hover {
+  border-color: #D4CEC4;
+  box-shadow: 0 2px 4px rgba(92, 79, 61, 0.1);
+}
+
+.semesterPreviewItem.dragging {
+  opacity: 0.5;
+}
+
+.semesterHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.semesterTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dragHandle {
+  color: #C4BDB0;
+  font-size: 16px;
+  cursor: grab;
+  user-select: none;
+}
+
+.dragHandle:active {
+  cursor: grabbing;
+}
+
+.semesterLabel {
+  font-size: 15px;
+  font-weight: 600;
+  color: #2C2416;
+  flex: 1;
+}
+
+.deleteSemesterButton {
+  background: none;
+  border: none;
+  color: #C4756E;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0 8px;
+  line-height: 1;
+  transition: color 0.2s;
+  margin-left: auto;
+}
+
+.deleteSemesterButton:hover {
+  color: #A65D57;
+}
+
+.semesterNote {
+  font-weight: 400;
+  color: #8B7355;
+  font-size: 0.9em;
+}
+
+.gpaGroup {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.gpaItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.gpaItem label {
+  font-size: 11px;
+  color: #8C7B68;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+}
+
+.gpaValue {
+  font-size: 14px;
+  font-weight: 600;
+  color: #5C4F3D;
+  padding: 6px 10px;
+  background: #FAF8F5;
+  border-radius: 4px;
+  text-align: right;
+  min-width: 70px;
+}
+
+.coursesTable {
+  margin-top: 12px;
+  width: 100%;
+}
+
+.coursesTable table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.coursesTable th {
+  text-align: left;
+  padding: 8px 12px;
+  background: #FAF8F5;
+  color: #5C4F3D;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid #E8E3DC;
+}
+
+.coursesTable td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #F5F2ED;
+  color: #5C4F3D;
+}
+
+.coursesTable tbody tr:hover {
+  background: #FDFCFB;
+}
+
+.courseNameInput {
+  width: 100%;
+  padding: 4px 8px;
+  border: 1px solid #E8E3DC;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #5C4F3D;
+  font-family: inherit;
+}
+
+.courseNameInput:focus {
+  outline: none;
+  border-color: #8C7B68;
+}
+
+.unitsInput {
+  width: 60px;
+  padding: 4px 8px;
+  border: 1px solid #D4CEC4;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #5C4F3D;
+  text-align: center;
+  font-family: inherit;
+}
+
+.unitsInput:focus {
+  outline: none;
+  border-color: #8C7B68;
+}
+
+.gradeSelect {
+  padding: 4px 8px;
+  border: 1px solid #D4CEC4;
+  border-radius: 4px;
+  background: white;
+  color: #5C4F3D;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.gradeSelect:hover {
+  border-color: #C4BDB0;
+}
+
+.gradeSelect:focus {
+  outline: none;
+  border-color: #8C7B68;
+}
+
+.deleteButton {
+  background: none;
+  border: none;
+  color: #C4756E;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0 8px;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.deleteButton:hover {
+  color: #A65D57;
+}
+
+.addCourseButton {
+  margin-top: 8px;
+  padding: 6px 12px;
+  background: #FAF8F5;
+  border: 1px dashed #D4CEC4;
+  border-radius: 4px;
+  color: #8C7B68;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.addCourseButton:hover {
+  background: #F5F2ED;
+  border-color: #8C7B68;
+  color: #5C4F3D;
+}
+
+.addSemesterButton {
+  margin-top: 16px;
+  padding: 10px 20px;
+  background: #FAF8F5;
+  border: 1px dashed #D4CEC4;
+  border-radius: 4px;
+  color: #8C7B68;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.addSemesterButton:hover {
+  background: #F5F2ED;
+  border-color: #8C7B68;
+  color: #5C4F3D;
+}
