@@ -76,6 +76,17 @@ const GPATracker = () => {
     return (
       <>
         <div className={styles.emptyState}>
+          <h2 className={styles.emptyTitle}>Get insights in one step</h2>
+          <button
+            onClick={() => setShowUpload(true)}
+            className={styles.ctaButton}
+          >
+            Upload Your Transcript
+          </button>
+          <p className={styles.emptyNote}>
+            For SMU students only • Upload non-official transcript
+          </p>
+
           <div className={styles.instructionsGrid}>
             <div className={styles.instructionStep}>
               <p>1. Go to SMU Oasis and search for unofficial transcript</p>
@@ -90,17 +101,6 @@ const GPATracker = () => {
               <img src="/assets/smu_instructions/oasis3.png" alt="Queued page" />
             </div>
           </div>
-
-          <h2 className={styles.emptyTitle}>Get insights in one step</h2>
-          <button
-            onClick={() => setShowUpload(true)}
-            className={styles.ctaButton}
-          >
-            Upload Your Transcript
-          </button>
-          <p className={styles.emptyNote}>
-            For SMU students only • Upload non-official transcript
-          </p>
         </div>
         {showUpload && (
           <div className={styles.overlay}>
