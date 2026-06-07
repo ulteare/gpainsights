@@ -53,61 +53,34 @@ const SemesterManager = ({ semesters, onClose, onUpdate }) => {
     setSemestersData(updatedSemesters);
   };
 
-  const handleAddSemester = async () => {
-    try {
-      setLoading(true);
-      setError(null);
+  const handleAddSemester = () => {
+    const nextSequence = semestersData.length > 0
+      ? Math.max(...semestersData.map((s, i) => s.sequence_order || i + 1)) + 1
+      : 1;
 
-      const nextSequence = semesters.length > 0
-        ? Math.max(...semesters.map(s => s.sequence_order || 0)) + 1
-        : 1;
+    const newSemester = {
+      id: `new_${Date.now()}`, // Temporary ID for new semesters
+      semester_code: `${nextSequence}.1`,
+      semester_label: `Y${Math.ceil(nextSequence / 2)} S${nextSequence % 2 === 1 ? '1' : '2'}`,
+      label: `Y${Math.ceil(nextSequence / 2)} S${nextSequence % 2 === 1 ? '1' : '2'}`,
+      gpa: 0,
+      term_gpa: 0,
+      cumulative_gpa: 0,
+      note: '',
+      sequence_order: nextSequence,
+      courses: [],
+      isNew: true, // Flag to identify new semesters
+    };
 
-      const { data: newSemester, error: insertError } = await supabase
-        .from('semesters')
-        .insert({
-          user_id: user.id,
-          semester_code: `${nextSequence}.1`,
-          semester_label: `Y${Math.ceil(nextSequence / 2)} S${nextSequence % 2 === 1 ? '1' : '2'}`,
-          gpa: 0,
-          note: '',
-          sequence_order: nextSequence,
-        })
-        .select()
-        .single();
-
-      if (insertError) throw insertError;
-
-      onUpdate(); // Refresh parent data
-    } catch (err) {
-      console.error('Error adding semester:', err);
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
+    setSemestersData([...semestersData, newSemester]);
   };
 
-  const handleDeleteSemester = async (semesterIndex) => {
+  const handleDeleteSemester = (semesterIndex) => {
     if (!confirm('Are you sure you want to delete this semester and all its courses?')) return;
 
-    try {
-      setLoading(true);
-      setError(null);
-
-      const semester = semestersData[semesterIndex];
-      const { error: deleteError } = await supabase
-        .from('semesters')
-        .delete()
-        .eq('id', semester.id);
-
-      if (deleteError) throw deleteError;
-
-      onUpdate(); // Refresh parent data
-    } catch (err) {
-      console.error('Error deleting semester:', err);
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
+    const updated = [...semestersData];
+    updated.splice(semesterIndex, 1);
+    setSemestersData(updated);
   };
 
   const handleSave = async () => {
@@ -115,13 +88,47 @@ const SemesterManager = ({ semesters, onClose, onUpdate }) => {
       setLoading(true);
       setError(null);
 
-      // Update each semester and its courses
+      // Find deleted semesters (in original but not in current)
+      const deletedSemesters = semesters.filter(
+        original => !semestersData.find(s => s.id === original.id)
+      );
+
+      // Delete removed semesters
+      for (const deleted of deletedSemesters) {
+        const { error: deleteError } = await supabase
+          .from('semesters')
+          .delete()
+          .eq('id', deleted.id);
+
+        if (deleteError) throw deleteError;
+      }
+
+      // Update/Insert each semester and its courses
       for (let i = 0; i < semestersData.length; i++) {
         const semester = semestersData[i];
-        const originalSemester = semesters.find(s => s.id === semester.id);
+        const isNewSemester = semester.isNew || String(semester.id).startsWith('new_');
 
-        // Update semester if changed
-        if (originalSemester) {
+        let semesterId = semester.id;
+
+        if (isNewSemester) {
+          // Insert new semester
+          const { data: newSemester, error: insertError } = await supabase
+            .from('semesters')
+            .insert({
+              user_id: user.id,
+              semester_code: semester.semester_code || semester.sem,
+              semester_label: semester.semester_label || semester.label,
+              gpa: semester.cumulative_gpa || semester.gpa,
+              note: semester.note || '',
+              sequence_order: i + 1,
+            })
+            .select()
+            .single();
+
+          if (insertError) throw insertError;
+          semesterId = newSemester.id;
+        } else {
+          // Update existing semester
           const { error: updateError } = await supabase
             .from('semesters')
             .update({
@@ -135,32 +142,32 @@ const SemesterManager = ({ semesters, onClose, onUpdate }) => {
 
           if (updateError) throw updateError;
 
-          // Delete existing courses
+          // Delete existing courses for this semester
           await supabase
             .from('courses')
             .delete()
             .eq('semester_id', semester.id);
+        }
 
-          // Insert updated courses
-          if (semester.courses && semester.courses.length > 0) {
-            const coursesToInsert = semester.courses.map(course => ({
-              semester_id: semester.id,
-              user_id: user.id,
-              name: course.name,
-              units_taken: course.units_taken || course.units_earned,
-              units_earned: course.units_earned,
-              grade: course.grade,
-              grade_points: course.grade_points,
-              in_progress: course.in_progress || false,
-              graded: course.graded,
-            }));
+        // Insert courses
+        if (semester.courses && semester.courses.length > 0) {
+          const coursesToInsert = semester.courses.map(course => ({
+            semester_id: semesterId,
+            user_id: user.id,
+            name: course.name,
+            units_taken: course.units_taken || course.units_earned,
+            units_earned: course.units_earned,
+            grade: course.grade,
+            grade_points: course.grade_points,
+            in_progress: course.in_progress || false,
+            graded: course.graded,
+          }));
 
-            const { error: courseError } = await supabase
-              .from('courses')
-              .insert(coursesToInsert);
+          const { error: courseError } = await supabase
+            .from('courses')
+            .insert(coursesToInsert);
 
-            if (courseError) throw courseError;
-          }
+          if (courseError) throw courseError;
         }
       }
 
@@ -175,47 +182,47 @@ const SemesterManager = ({ semesters, onClose, onUpdate }) => {
   };
 
   return (
-    <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <div className={styles.modalHeader}>
-          <h2>Manage Semesters</h2>
-          <button onClick={onClose} className={styles.closeButton}>✕</button>
-        </div>
+    <div className={styles.pageContainer}>
+      <div className={styles.pageHeader}>
+        <button onClick={onClose} className={styles.backButton} title="Back to main page">
+          ← Back
+        </button>
+        <h1>Manage Semesters</h1>
+      </div>
 
-        <div className={styles.modalContent}>
-          {error && <div className={styles.errorBanner}>{error}</div>}
+      <div className={styles.pageContent}>
+        {error && <div className={styles.errorBanner}>{error}</div>}
 
-          {loading && semestersData.length === 0 ? (
-            <div className={styles.loading}>Loading semesters...</div>
-          ) : (
-            <>
-              <SemesterEditor
-                semestersData={semestersData}
-                onDataChange={handleDataChange}
-                onAddSemester={handleAddSemester}
-                onDeleteSemester={handleDeleteSemester}
-                showStats={false}
-              />
+        {loading && semestersData.length === 0 ? (
+          <div className={styles.loading}>Loading semesters...</div>
+        ) : (
+          <>
+            <SemesterEditor
+              semestersData={semestersData}
+              onDataChange={handleDataChange}
+              onAddSemester={handleAddSemester}
+              onDeleteSemester={handleDeleteSemester}
+              showStats={false}
+            />
 
-              <div className={styles.modalActions}>
-                <button
-                  onClick={onClose}
-                  className={styles.cancelButton}
-                  disabled={loading}
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleSave}
-                  className={styles.saveButton}
-                  disabled={loading}
-                >
-                  {loading ? 'Saving...' : 'Save Changes'}
-                </button>
-              </div>
-            </>
-          )}
-        </div>
+            <div className={styles.pageActions}>
+              <button
+                onClick={onClose}
+                className={styles.cancelButton}
+                disabled={loading}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSave}
+                className={styles.saveButton}
+                disabled={loading}
+              >
+                {loading ? 'Saving...' : 'Save Changes'}
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

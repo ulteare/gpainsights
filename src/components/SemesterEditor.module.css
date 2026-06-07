@@ -91,6 +91,35 @@
   flex: 1;
 }
 
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #5C4F3D;
+  cursor: pointer;
+  user-select: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.checkboxLabel:hover {
+  background: #F5F2ED;
+}
+
+.checkboxLabel span {
+  font-family: 'Jost', sans-serif;
+  font-weight: 500;
+}
+
+.exchangeCheckbox {
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  accent-color: #8C6E4B;
+}
+
 .deleteSemesterButton {
   background: none;
   border: none;

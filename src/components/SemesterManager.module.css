@@ -1,64 +1,49 @@
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(44, 36, 23, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
+.pageContainer {
+  min-height: 100vh;
+  background: #FAF8F5;
   padding: 2rem;
 }
 
-.modal {
-  background: #FAF8F5;
-  border-radius: 16px;
-  border: 1px solid #E8E0D5;
-  max-width: 700px;
-  width: 100%;
-  max-height: 80vh;
+.pageHeader {
+  max-width: 1200px;
+  margin: 0 auto 2rem;
   display: flex;
-  flex-direction: column;
-  box-shadow: 0 20px 60px rgba(44, 36, 23, 0.3);
-}
-
-.modalHeader {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 1.5rem 2rem;
-  border-bottom: 1px solid #E0D6C8;
+  gap: 1rem;
 }
 
-.modalHeader h2 {
+.pageHeader h1 {
   font-family: 'Playfair Display', serif;
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: 500;
   color: #2C2417;
   margin: 0;
 }
 
-.closeButton {
+.backButton {
   background: transparent;
-  border: none;
-  font-size: 1.5rem;
-  color: #8C7B68;
+  border: 1px solid #E0D6C8;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-family: 'Jost', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #8C6E4B;
   cursor: pointer;
-  padding: 0.25rem;
-  line-height: 1;
-  transition: color 0.2s ease;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.closeButton:hover {
-  color: #2C2417;
+.backButton:hover {
+  background: #F0E6D6;
+  border-color: #8C6E4B;
 }
 
-.modalContent {
-  padding: 2rem;
-  overflow-y: auto;
-  flex: 1;
+.pageContent {
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .errorBanner {
@@ -216,9 +201,58 @@
   cursor: not-allowed;
 }
 
-.modalActions {
+.pageActions {
   border-top: 1px solid #E0D6C8;
   padding-top: 1.5rem;
+  margin-top: 2rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.cancelButton,
+.saveButton {
+  font-family: 'Jost', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.cancelButton {
+  background: transparent;
+  color: #8C7B68;
+  border: 1px solid #E0D6C8;
+}
+
+.cancelButton:hover:not(:disabled) {
+  background: #F0E6D6;
+  border-color: #8C6E4B;
+}
+
+.saveButton {
+  background: #8C6E4B;
+  color: #FAF8F5;
+}
+
+.saveButton:hover:not(:disabled) {
+  background: #6B4E2A;
+}
+
+.cancelButton:disabled,
+.saveButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem;
+  color: #8C7B68;
+  font-family: 'Jost', sans-serif;
 }
 
 .addButton {

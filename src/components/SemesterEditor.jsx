@@ -32,9 +32,13 @@ export const SemesterEditor = ({
   };
 
   const recalculateGPAs = (chartData) => {
+    let cumulativeGradePoints = 0;
+    let cumulativeUnits = 0;
+    let lastCumulativeGPA = 0;
+
     return chartData.map((semester, semIndex) => {
       // Calculate term GPA from courses (skip for exchange/internship semesters)
-      let termGPA = semester.term_gpa || 0;
+      let termGPA = 0;
       if (semester.note !== 'Exchange / Internship') {
         let termGradePoints = 0;
         let termUnits = 0;
@@ -49,21 +53,21 @@ export const SemesterEditor = ({
         termGPA = termUnits > 0 ? parseFloat((termGradePoints / termUnits).toFixed(2)) : 0;
       }
 
-      // Calculate cumulative GPA from all semesters up to this one
-      const semestersUpToThis = chartData.slice(0, semIndex + 1);
-      let totalGradePoints = 0;
-      let totalUnits = 0;
-
-      semestersUpToThis.forEach(sem => {
-        sem.courses?.forEach(course => {
-          if (course.graded && course.grade_points !== null) {
-            totalGradePoints += course.grade_points * course.units_earned;
-            totalUnits += course.units_earned;
-          }
-        });
+      // Add this semester's courses to cumulative totals
+      semester.courses?.forEach(course => {
+        if (course.graded && course.grade_points !== null) {
+          cumulativeGradePoints += course.grade_points * course.units_earned;
+          cumulativeUnits += course.units_earned;
+        }
       });
 
-      const cumulativeGPA = totalUnits > 0 ? parseFloat((totalGradePoints / totalUnits).toFixed(2)) : 0;
+      // Calculate cumulative GPA
+      const cumulativeGPA = cumulativeUnits > 0
+        ? parseFloat((cumulativeGradePoints / cumulativeUnits).toFixed(2))
+        : lastCumulativeGPA;
+
+      // Store this cumulative GPA for next iteration
+      lastCumulativeGPA = cumulativeGPA;
 
       return {
         ...semester,
@@ -120,6 +124,13 @@ export const SemesterEditor = ({
     };
     updated[semesterIndex].courses = updated[semesterIndex].courses || [];
     updated[semesterIndex].courses.push(newCourse);
+    const recalculated = recalculateGPAs(updated);
+    onDataChange(recalculated);
+  };
+
+  const handleToggleExchange = (semesterIndex, isExchange) => {
+    const updated = [...semestersData];
+    updated[semesterIndex].note = isExchange ? 'Exchange / Internship' : '';
     const recalculated = recalculateGPAs(updated);
     onDataChange(recalculated);
   };
@@ -189,6 +200,15 @@ export const SemesterEditor = ({
                     <span className={styles.semesterNote}> ({semester.note})</span>
                   )}
                 </span>
+                <label className={styles.checkboxLabel}>
+                  <input
+                    type="checkbox"
+                    checked={semester.note === 'Exchange / Internship'}
+                    onChange={(e) => handleToggleExchange(index, e.target.checked)}
+                    className={styles.exchangeCheckbox}
+                  />
+                  <span>Exchange/Internship</span>
+                </label>
                 <button
                   onClick={() => onDeleteSemester(index)}
                   className={styles.deleteSemesterButton}

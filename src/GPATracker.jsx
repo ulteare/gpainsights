@@ -44,6 +44,17 @@ const GPATracker = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Show SemesterManager as standalone page
+  if (showManager) {
+    return (
+      <SemesterManager
+        semesters={data || []}
+        onClose={() => setShowManager(false)}
+        onUpdate={refetch}
+      />
+    );
+  }
+
   // If loading or error, show appropriate state
   if (loading) {
     return (
@@ -321,7 +332,7 @@ const GPATracker = () => {
               onClick={() => setShowManager(true)}
               className={styles.settingsButton}
             >
-              Add/Edit Semesters
+              View / Edit / Predict Grades
             </button>
             <div className={styles.uploadButtonWrapper}>
               <button
@@ -394,14 +405,6 @@ const GPATracker = () => {
           </div>
         </div>
       </div>
-
-      {showManager && (
-        <SemesterManager
-          semesters={data}
-          onClose={() => setShowManager(false)}
-          onUpdate={refetch}
-        />
-      )}
 
       {showUpload && (
         <div className={styles.overlay} onClick={() => setShowUpload(false)}>
