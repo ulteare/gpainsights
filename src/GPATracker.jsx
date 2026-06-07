@@ -76,24 +76,39 @@ const GPATracker = () => {
     return (
       <>
         <div className={styles.emptyState}>
-          <div className={styles.emptyIcon}>📊</div>
-          <h2 className={styles.emptyTitle}>Start Tracking Your GPA</h2>
-          <p className={styles.emptyDescription}>
-            Add your semesters and grades to visualize your academic progress over time.
-          </p>
+          {/* <div className={styles.emptyIcon}>📊</div> */}
+          <h2 className={styles.emptyTitle}>Get insights in One step</h2>
+          {/* <p className={styles.emptyDescription}>
+            Upload your transcript to visualize your academic progress and track your GPA over time.
+          </p> */}
           <button
-            onClick={() => setShowManager(true)}
+            onClick={() => setShowUpload(true)}
             className={styles.ctaButton}
           >
-            Add Your First Semester
+            Upload Your Transcript
           </button>
+          <p className={styles.emptyNote}>
+            Note: For SMU students only • Upload non-official transcript
+          </p>
         </div>
-        {showManager && (
-          <SemesterManager
-            semesters={[]}
-            onClose={() => setShowManager(false)}
-            onUpdate={refetch}
-          />
+        {showUpload && (
+          <div className={styles.overlay}>
+            <div className={styles.uploadModal}>
+              <button
+                onClick={() => setShowUpload(false)}
+                className={styles.closeButton}
+                aria-label="Close"
+              >
+                ×
+              </button>
+              <TranscriptUpload
+                onSuccess={() => {
+                  setShowUpload(false);
+                  refetch();
+                }}
+              />
+            </div>
+          </div>
         )}
       </>
     );

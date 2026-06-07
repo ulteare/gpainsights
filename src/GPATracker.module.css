@@ -320,9 +320,17 @@
   font-family: 'Jost', sans-serif;
   font-size: 1rem;
   color: #8C7B68;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   max-width: 400px;
   line-height: 1.6;
+}
+
+.emptyNote {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.875rem;
+  color: #8C7B68;
+  margin-top: 1rem;
+  font-style: italic;
 }
 
 .ctaButton {
@@ -330,11 +338,11 @@
   font-size: 1rem;
   font-weight: 500;
   padding: 1rem 2rem;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
   border: none;
-  background: #8C6E4B;
+  background: #442b0d;
   color: #FAF8F5;
   box-shadow: 0 4px 12px rgba(140, 110, 75, 0.2);
 }
