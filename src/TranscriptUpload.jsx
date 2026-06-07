@@ -5,7 +5,7 @@ import { parseTranscript } from './utils/transcriptParser';
 import { SemesterEditor } from './components/SemesterEditor';
 import styles from './TranscriptUpload.module.css';
 
-export const TranscriptUpload = ({ onSuccess }) => {
+export const TranscriptUpload = ({ onSuccess, onCancel }) => {
   const { importTranscriptData, uploading, error } = useTranscriptUpload();
   const { refetch } = useSemesters();
   const [dragActive, setDragActive] = useState(false);
@@ -13,6 +13,8 @@ export const TranscriptUpload = ({ onSuccess }) => {
   const [parseStatus, setParseStatus] = useState('');
   const [parsedData, setParsedData] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [showExitConfirm, setShowExitConfirm] = useState(false);
   const fileInputRef = useRef(null);
 
   const handleDrag = (e) => {
@@ -138,6 +140,7 @@ export const TranscriptUpload = ({ onSuccess }) => {
       ...parsedData,
       chart_data: updatedSemesters,
     });
+    setHasUnsavedChanges(true);
   };
 
   const handleAddSemester = () => {
@@ -162,6 +165,27 @@ export const TranscriptUpload = ({ onSuccess }) => {
     const updated = [...parsedData.chart_data];
     updated.splice(semesterIndex, 1);
     handleDataChange(updated);
+  };
+
+  const handleCancelClick = () => {
+    if (hasUnsavedChanges && showPreview) {
+      setShowExitConfirm(true);
+    } else {
+      setShowPreview(false);
+      setParsedData(null);
+      setSelectedFile(null);
+      setHasUnsavedChanges(false);
+      if (onCancel) onCancel();
+    }
+  };
+
+  const handleConfirmExit = () => {
+    setShowExitConfirm(false);
+    setShowPreview(false);
+    setParsedData(null);
+    setSelectedFile(null);
+    setHasUnsavedChanges(false);
+    if (onCancel) onCancel();
   };
 
   return (
@@ -224,7 +248,7 @@ export const TranscriptUpload = ({ onSuccess }) => {
         </>
       ) : (
         <div className={styles.previewSection}>
-          <h3>Review Your Data</h3>
+          <h3>Review & Confirm Your Data</h3>
           <p className={styles.previewNote}>
             Review the imported data below. You can edit any values before confirming.
           </p>
@@ -240,10 +264,7 @@ export const TranscriptUpload = ({ onSuccess }) => {
           <div className={styles.previewActions}>
             <button
               className={styles.cancelButton}
-              onClick={() => {
-                setShowPreview(false);
-                setParsedData(null);
-              }}
+              onClick={handleCancelClick}
             >
               Cancel
             </button>
@@ -252,13 +273,36 @@ export const TranscriptUpload = ({ onSuccess }) => {
               onClick={handleConfirmImport}
               disabled={uploading}
             >
-              {uploading ? parseStatus : 'Confirm & Import'}
+              {uploading ? parseStatus : 'Confirm & Save'}
             </button>
           </div>
 
           <p className={styles.warningNote}>
             ⚠️ This will replace all existing semester data with the new transcript data.
           </p>
+        </div>
+      )}
+
+      {showExitConfirm && (
+        <div className={styles.confirmOverlay}>
+          <div className={styles.confirmDialog}>
+            <h3>Unsaved Changes</h3>
+            <p>You have unsaved changes. Are you sure you want to leave?</p>
+            <div className={styles.confirmActions}>
+              <button
+                onClick={() => setShowExitConfirm(false)}
+                className={styles.continueEditingButton}
+              >
+                Continue Editing
+              </button>
+              <button
+                onClick={handleConfirmExit}
+                className={styles.leaveButton}
+              >
+                Leave without Saving
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

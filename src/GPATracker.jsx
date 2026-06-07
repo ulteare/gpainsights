@@ -106,6 +106,7 @@ const GPATracker = () => {
                   setShowUpload(false);
                   refetch();
                 }}
+                onCancel={() => setShowUpload(false)}
               />
             </div>
           </div>
@@ -364,7 +365,7 @@ const GPATracker = () => {
                 <span className={styles.infoIcon}>ⓘ</span>
                 {showTooltip && (
                   <div className={styles.tooltip}>
-                    Upload your academic transcript for instant insights
+                    Uploading your academic transcript will override existing data. 
                   </div>
                 )}
               </div>
@@ -430,6 +431,7 @@ const GPATracker = () => {
                 setShowUpload(false);
                 refetch(); // Refresh chart data
               }}
+              onCancel={() => setShowUpload(false)}
             />
           </div>
         </div>

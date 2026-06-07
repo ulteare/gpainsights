@@ -9,6 +9,8 @@ const SemesterManager = ({ semesters, onClose, onUpdate }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [semestersData, setSemestersData] = useState([]);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [showExitConfirm, setShowExitConfirm] = useState(false);
 
   // Fetch courses for all semesters on mount
   useEffect(() => {
@@ -51,6 +53,7 @@ const SemesterManager = ({ semesters, onClose, onUpdate }) => {
 
   const handleDataChange = (updatedSemesters) => {
     setSemestersData(updatedSemesters);
+    setHasUnsavedChanges(true);
   };
 
   const handleAddSemester = () => {
@@ -73,6 +76,7 @@ const SemesterManager = ({ semesters, onClose, onUpdate }) => {
     };
 
     setSemestersData([...semestersData, newSemester]);
+    setHasUnsavedChanges(true);
   };
 
   const handleDeleteSemester = (semesterIndex) => {
@@ -81,6 +85,20 @@ const SemesterManager = ({ semesters, onClose, onUpdate }) => {
     const updated = [...semestersData];
     updated.splice(semesterIndex, 1);
     setSemestersData(updated);
+    setHasUnsavedChanges(true);
+  };
+
+  const handleClose = () => {
+    if (hasUnsavedChanges) {
+      setShowExitConfirm(true);
+    } else {
+      onClose();
+    }
+  };
+
+  const handleConfirmExit = () => {
+    setShowExitConfirm(false);
+    onClose();
   };
 
   const handleSave = async () => {
@@ -171,6 +189,7 @@ const SemesterManager = ({ semesters, onClose, onUpdate }) => {
         }
       }
 
+      setHasUnsavedChanges(false);
       onUpdate(); // Refresh parent data
       onClose();
     } catch (err) {
@@ -183,7 +202,7 @@ const SemesterManager = ({ semesters, onClose, onUpdate }) => {
 
   return (
     <div className={styles.pageContainer}>
-      <button onClick={onClose} className={styles.backButton} title="Back to main page">
+      <button onClick={handleClose} className={styles.backButton} title="Back to main page">
         ← Back
       </button>
 
@@ -215,7 +234,7 @@ const SemesterManager = ({ semesters, onClose, onUpdate }) => {
 
             <div className={styles.pageActions}>
               <button
-                onClick={onClose}
+                onClick={handleClose}
                 className={styles.cancelButton}
                 disabled={loading}
               >
@@ -232,6 +251,29 @@ const SemesterManager = ({ semesters, onClose, onUpdate }) => {
           </>
         )}
       </div>
+
+      {showExitConfirm && (
+        <div className={styles.confirmOverlay}>
+          <div className={styles.confirmDialog}>
+            <h3>Unsaved Changes</h3>
+            <p>You have unsaved changes. Are you sure you want to leave?</p>
+            <div className={styles.confirmActions}>
+              <button
+                onClick={() => setShowExitConfirm(false)}
+                className={styles.continueEditingButton}
+              >
+                Continue Editing
+              </button>
+              <button
+                onClick={handleConfirmExit}
+                className={styles.leaveButton}
+              >
+                Leave without Saving
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
