@@ -76,11 +76,22 @@ const GPATracker = () => {
     return (
       <>
         <div className={styles.emptyState}>
-          {/* <div className={styles.emptyIcon}>📊</div> */}
-          <h2 className={styles.emptyTitle}>Get insights in One step</h2>
-          {/* <p className={styles.emptyDescription}>
-            Upload your transcript to visualize your academic progress and track your GPA over time.
-          </p> */}
+          <div className={styles.instructionsGrid}>
+            <div className={styles.instructionStep}>
+              <p>1. Go to SMU Oasis and search for unofficial transcript</p>
+              <img src="/assets/smu_instructions/oasis1.png" alt="SMU Oasis search" />
+            </div>
+            <div className={styles.instructionStep}>
+              <p>2. Click 'run report'</p>
+              <img src="/assets/smu_instructions/oasis2.png" alt="Run report button" />
+            </div>
+            <div className={styles.instructionStep}>
+              <p>3. Your request will be queued. Wait 1-2 mins and your transcript will open automatically in a new tab.</p>
+              <img src="/assets/smu_instructions/oasis3.png" alt="Queued page" />
+            </div>
+          </div>
+
+          <h2 className={styles.emptyTitle}>Get insights in one step</h2>
           <button
             onClick={() => setShowUpload(true)}
             className={styles.ctaButton}
@@ -88,7 +99,7 @@ const GPATracker = () => {
             Upload Your Transcript
           </button>
           <p className={styles.emptyNote}>
-            Note: For SMU students only • Upload non-official transcript
+            For SMU students only • Upload non-official transcript
           </p>
         </div>
         {showUpload && (

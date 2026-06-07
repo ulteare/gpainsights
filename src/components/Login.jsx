@@ -50,14 +50,13 @@ const Login = () => {
 
       <div className={styles.content}>
         <div className={styles.hero}>
-          <h1 className={styles.title}>GPA Insights</h1>
-          <p className={styles.subtitle}>Track your academic journey</p>
+          <h1 className={styles.title}>All you need<br />is your transcript.</h1>
         </div>
 
         <div className={styles.valueProps}>
           <h2>What you can do</h2>
           <ul>
-            <li>Charts GPA on a pretty chart</li>
+            <li>Chart GPA on a pretty chart</li>
             <li>View distribution of grades</li>
             <li>Conduct 'What-if' analysis to predict future grades</li>
           </ul>
@@ -67,15 +66,15 @@ const Login = () => {
           <h2>How to get started</h2>
           <ol>
             <li>
-              <p>Go to SMU Oasis and search for unofficial transcript</p>
+              <p>1. Go to SMU Oasis and search for unofficial transcript</p>
               <img src="/assets/smu_instructions/oasis1.png" alt="SMU Oasis search" />
             </li>
             <li>
-              <p>Click 'run report'</p>
+              <p>2. Click 'run report'</p>
               <img src="/assets/smu_instructions/oasis2.png" alt="Run report button" />
             </li>
             <li>
-              <p>Your request will be queued and you will see this page. Wait for 1-2 mins and your transcript will open automatically in a new tab.</p>
+              <p>3. Your request will be queued and you will see this page. Wait for 1-2 mins and your transcript will open automatically in a new tab.</p>
               <img src="/assets/smu_instructions/oasis3.png" alt="Queued page" />
             </li>
           </ol>
