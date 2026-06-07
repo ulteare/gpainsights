@@ -1,0 +1,540 @@
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px;
+  font-family: 'Jost', sans-serif;
+}
+
+.container h2 {
+  font-size: 28px;
+  font-weight: 500;
+  color: #2C2416;
+  margin-bottom: 16px;
+}
+
+.instructions {
+  background: #FAF8F5;
+  border: 1px solid #E5DFD3;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+}
+
+.instructions p {
+  margin: 0;
+  color: #5C4F3D;
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+.dropZone {
+  border: 2px dashed #D9CDB8;
+  border-radius: 12px;
+  padding: 48px 32px;
+  text-align: center;
+  background: #FEFDFB;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.dropZone:hover {
+  border-color: #8C7B68;
+  background: #FAF8F5;
+}
+
+.dropZone.dragActive {
+  border-color: #5F3A12;
+  background: #F5F0E8;
+  border-width: 3px;
+}
+
+.uploadIcon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.dropText p {
+  margin: 8px 0;
+  color: #2C2416;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.orText {
+  color: #8C7B68 !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+}
+
+.fileInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.fileName {
+  font-size: 16px;
+  font-weight: 500;
+  color: #2C2416;
+  max-width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fileSize {
+  font-size: 14px;
+  color: #8C7B68;
+}
+
+.importButton {
+  background: #8C6E4B;
+  color: #FAF8F5;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 32px;
+  font-family: 'Jost', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+  display: block;
+}
+
+.importButton:hover:not(:disabled) {
+  background: #6B4E2A;
+}
+
+.importButton:disabled {
+  background: #8C7B68;
+  cursor: wait;
+}
+
+.error {
+  background: #FFF5F5;
+  border: 1px solid #FEB2B2;
+  border-radius: 6px;
+  padding: 12px 16px;
+  color: #C53030;
+  font-size: 14px;
+  margin-top: 16px;
+}
+
+/* Preview Section */
+.previewSection {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.previewSection h3 {
+  font-size: 22px;
+  font-weight: 500;
+  color: #2C2416;
+  margin-bottom: 8px;
+}
+
+.previewNote {
+  color: #5C4F3D;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.statsPreview {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.statItem {
+  background: #FAF8F5;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #E5DFD3;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.statItem span {
+  font-size: 13px;
+  color: #8C7B68;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.statItem strong {
+  font-size: 24px;
+  color: #2C2416;
+  font-weight: 600;
+}
+
+.semestersPreview h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2C2416;
+  margin-bottom: 16px;
+}
+
+.semesterPreviewItem {
+  background: white;
+  border: 1px solid #E5DFD3;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+  cursor: move;
+  transition: all 0.2s;
+}
+
+.semesterPreviewItem:hover {
+  border-color: #D4CEC4;
+  box-shadow: 0 2px 4px rgba(92, 79, 61, 0.1);
+}
+
+.semesterPreviewItem.dragging {
+  opacity: 0.5;
+}
+
+.semesterHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.semesterTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dragHandle {
+  color: #C4BDB0;
+  font-size: 16px;
+  cursor: grab;
+  user-select: none;
+}
+
+.dragHandle:active {
+  cursor: grabbing;
+}
+
+.semesterLabel {
+  font-size: 15px;
+  font-weight: 600;
+  color: #2C2416;
+  flex: 1;
+}
+
+.deleteSemesterButton {
+  background: none;
+  border: none;
+  color: #C4756E;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0 8px;
+  line-height: 1;
+  transition: color 0.2s;
+  margin-left: auto;
+}
+
+.deleteSemesterButton:hover {
+  color: #A65D57;
+}
+
+.semesterNote {
+  font-weight: 400;
+  color: #8B7355;
+  font-size: 0.9em;
+}
+
+.gpaGroup {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.gpaItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.gpaItem label {
+  font-size: 11px;
+  color: #8C7B68;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+}
+
+.gpaValue {
+  font-size: 14px;
+  font-weight: 600;
+  color: #5C4F3D;
+  padding: 6px 10px;
+  background: #FAF8F5;
+  border-radius: 4px;
+  text-align: right;
+  min-width: 70px;
+}
+
+.coursesTable {
+  margin-top: 12px;
+  width: 100%;
+}
+
+.coursesTable table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.coursesTable th {
+  text-align: left;
+  padding: 8px 12px;
+  background: #FAF8F5;
+  color: #5C4F3D;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid #E8E3DC;
+}
+
+.coursesTable td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #F5F2ED;
+  color: #5C4F3D;
+}
+
+.coursesTable tbody tr:hover {
+  background: #FDFCFB;
+}
+
+.gradeSelect {
+  padding: 4px 8px;
+  border: 1px solid #D4CEC4;
+  border-radius: 4px;
+  background: white;
+  color: #5C4F3D;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.gradeSelect:hover {
+  border-color: #C4BDB0;
+}
+
+.gradeSelect:focus {
+  outline: none;
+  border-color: #8C7B68;
+}
+
+.courseNameInput {
+  width: 100%;
+  padding: 4px 8px;
+  border: 1px solid #E8E3DC;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #5C4F3D;
+  font-family: inherit;
+}
+
+.courseNameInput:focus {
+  outline: none;
+  border-color: #8C7B68;
+}
+
+.unitsInput {
+  width: 60px;
+  padding: 4px 8px;
+  border: 1px solid #D4CEC4;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #5C4F3D;
+  text-align: center;
+  font-family: inherit;
+}
+
+.unitsInput:focus {
+  outline: none;
+  border-color: #8C7B68;
+}
+
+.deleteButton {
+  background: none;
+  border: none;
+  color: #C4756E;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0 8px;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.deleteButton:hover {
+  color: #A65D57;
+}
+
+.addCourseButton {
+  margin-top: 8px;
+  padding: 6px 12px;
+  background: #FAF8F5;
+  border: 1px dashed #D4CEC4;
+  border-radius: 4px;
+  color: #8C7B68;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.addCourseButton:hover {
+  background: #F5F2ED;
+  border-color: #8C7B68;
+  color: #5C4F3D;
+}
+
+.addSemesterButton {
+  margin-top: 16px;
+  padding: 10px 20px;
+  background: #FAF8F5;
+  border: 1px dashed #D4CEC4;
+  border-radius: 4px;
+  color: #8C7B68;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.addSemesterButton:hover {
+  background: #F5F2ED;
+  border-color: #8C7B68;
+  color: #5C4F3D;
+}
+
+.gpaInput {
+  width: 70px;
+  padding: 6px 10px;
+  border: 1px solid #D9CDB8;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2C2416;
+  text-align: right;
+}
+
+.gpaInput:focus {
+  outline: none;
+  border-color: #5F3A12;
+}
+
+.courseCount {
+  font-size: 13px;
+  color: #8C7B68;
+}
+
+.previewActions {
+  display: flex;
+  gap: 12px;
+  margin-top: 32px;
+  margin-bottom: 16px;
+}
+
+.cancelButton,
+.confirmButton {
+  flex: 1;
+  padding: 14px 24px;
+  font-family: 'Jost', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.cancelButton {
+  background: transparent;
+  border: 1px solid #E0D6C8;
+  color: #8C7B68;
+}
+
+.cancelButton:hover {
+  background: #F0E6D6;
+  border-color: #8C6E4B;
+}
+
+.confirmButton {
+  background: #8C6E4B;
+  color: #FAF8F5;
+}
+
+.confirmButton:hover:not(:disabled) {
+  background: #6B4E2A;
+}
+
+.confirmButton:disabled {
+  background: #8C7B68;
+  cursor: wait;
+}
+
+.warningNote {
+  text-align: center;
+  color: #C53030;
+  font-size: 13px;
+  font-weight: 500;
+  margin-top: 16px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+  }
+
+  .container h2 {
+    font-size: 24px;
+  }
+
+  .dropZone {
+    padding: 32px 20px;
+  }
+
+  .uploadIcon {
+    font-size: 40px;
+  }
+
+  .dropText p {
+    font-size: 14px;
+  }
+
+  .importButton {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .statsPreview {
+    grid-template-columns: 1fr;
+  }
+
+  .statItem strong {
+    font-size: 20px;
+  }
+
+  .previewActions {
+    flex-direction: column;
+  }
+}

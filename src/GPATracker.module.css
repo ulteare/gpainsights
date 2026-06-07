@@ -47,10 +47,16 @@
   gap: 1rem;
 }
 
+.buttonGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
 .settingsButton {
   background: transparent;
   border: 1px solid #E0D6C8;
-  border-radius: 8px;
+  border-radius: 4px;
   padding: 0.5rem;
   cursor: pointer;
   color: #8C7B68;
@@ -64,6 +70,73 @@
   background: #F0E6D6;
   border-color: #8C6E4B;
   color: #6B4E2A;
+}
+
+.uploadButtonWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.uploadButton {
+  background: #5F3A12;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  color: #FAF8F5;
+  font-family: 'Jost', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.uploadButton:hover {
+  background: #4A2D0E;
+}
+
+.infoIconWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.infoIcon {
+  font-size: 16px;
+  color: #8C7B68;
+  transition: color 0.2s ease;
+}
+
+.infoIconWrapper:hover .infoIcon {
+  color: #5F3A12;
+}
+
+.tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  right: 0;
+  background: #2C2416;
+  color: #FAF8F5;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  white-space: nowrap;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  right: 8px;
+  border: 6px solid transparent;
+  border-top-color: #2C2416;
 }
 
 .badge {
@@ -247,9 +320,17 @@
   font-family: 'Jost', sans-serif;
   font-size: 1rem;
   color: #8C7B68;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   max-width: 400px;
   line-height: 1.6;
+}
+
+.emptyNote {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.875rem;
+  color: #8C7B68;
+  margin-top: 1rem;
+  font-style: italic;
 }
 
 .ctaButton {
@@ -257,11 +338,11 @@
   font-size: 1rem;
   font-weight: 500;
   padding: 1rem 2rem;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
   border: none;
-  background: #8C6E4B;
+  background: #442b0d;
   color: #FAF8F5;
   box-shadow: 0 4px 12px rgba(140, 110, 75, 0.2);
 }
@@ -275,6 +356,56 @@
 .ctaButton:active {
   transform: translateY(0);
   box-shadow: 0 2px 8px rgba(140, 110, 75, 0.2);
+}
+
+/* Upload Modal */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(44, 36, 22, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.uploadModal {
+  background: white;
+  border-radius: 12px;
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.closeButton {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: #8C7B68;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.closeButton:hover {
+  background: #F0E6D6;
+  color: #5F3A12;
 }
 
 /* Responsive Design */
@@ -314,8 +445,34 @@
     align-items: flex-start;
   }
 
+  .buttonGroup {
+    width: 100%;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
   .settingsButton {
     width: 100%;
+  }
+
+  .uploadButtonWrapper {
+    width: 100%;
+  }
+
+  .uploadButton {
+    width: 100%;
+  }
+
+  .tooltip {
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .tooltip::after {
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
   }
 
   .contentLayout {
