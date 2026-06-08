@@ -108,11 +108,37 @@ export const useUserSettings = () => {
     }
   };
 
+  const saveTranscriptJson = async (transcriptJson) => {
+    if (!user) return;
+
+    try {
+      setError(null);
+
+      const { data, error: updateError } = await supabase
+        .from('user_settings')
+        .update({
+          transcript_json: transcriptJson,
+        })
+        .eq('user_id', user.id)
+        .select()
+        .single();
+
+      if (updateError) throw updateError;
+      setSettings(data);
+      return data;
+    } catch (err) {
+      console.error('Error saving transcript JSON:', err);
+      setError(err.message);
+      throw err;
+    }
+  };
+
   return {
     settings,
     loading,
     error,
     updateSchool,
+    saveTranscriptJson,
     refetch: fetchSettings,
   };
 };

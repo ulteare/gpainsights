@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { useTranscriptUpload } from './hooks/useTranscriptUpload';
 import { useSemesters } from './hooks/useSemesters';
+import { useUserSettings } from './hooks/useUserSettings';
 import { parseTranscript } from './utils/transcriptParser';
 import { SemesterEditor } from './components/SemesterEditor';
 import styles from './TranscriptUpload.module.css';
@@ -8,6 +9,7 @@ import styles from './TranscriptUpload.module.css';
 export const TranscriptUpload = ({ onSuccess, onCancel }) => {
   const { importTranscriptData, uploading, error } = useTranscriptUpload();
   const { refetch } = useSemesters();
+  const { saveTranscriptJson } = useUserSettings();
   const [dragActive, setDragActive] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [parseStatus, setParseStatus] = useState('');
@@ -98,6 +100,10 @@ export const TranscriptUpload = ({ onSuccess, onCancel }) => {
         ...transcriptData,
         chart_data: chartDataWithCumulative,
       };
+
+      // Save the parsed JSON to database immediately
+      setParseStatus('Saving transcript data...');
+      await saveTranscriptJson(updatedData);
 
       setParsedData(updatedData);
       setShowPreview(true);
