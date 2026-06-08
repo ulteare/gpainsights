@@ -351,104 +351,108 @@ const GPATracker = () => {
 
   return (
     <>
-      <h2 className={styles.srOnly}>Cumulative GPA over semesters with grade band highlights.</h2>
-      <div className={styles.header}>
-        <div className={styles.headerLeft}>
-          <h1>Academic Progress</h1>
-          <p>Cumulative GPA · All Semesters</p>
-        </div>
-        <div className={styles.headerRight}>
-          <div className={styles.buttonGroup}>
+      {/* Action Buttons */}
+      <div className={styles.actionsBar}>
+        <div className={styles.buttonGroup}>
+          <button
+            onClick={() => setShowManager(true)}
+            className={styles.settingsButton}
+          >
+            View / Edit / Predict Grades
+          </button>
+          <div className={styles.uploadButtonWrapper}>
             <button
-              onClick={() => setShowManager(true)}
-              className={styles.settingsButton}
+              onClick={() => setShowUpload(true)}
+              className={styles.uploadButton}
             >
-              View / Edit / Predict Grades
+              Upload Transcript
             </button>
-            <div className={styles.uploadButtonWrapper}>
-              <button
-                onClick={() => setShowUpload(true)}
-                className={styles.uploadButton}
-              >
-                Upload Transcript
-              </button>
-              <div
-                className={styles.infoIconWrapper}
-                onMouseEnter={() => setShowTooltip(true)}
-                onMouseLeave={() => setShowTooltip(false)}
-              >
-                <span className={styles.infoIcon}>ⓘ</span>
-                {showTooltip && (
-                  <div className={styles.tooltip}>
-                    Uploading your academic transcript will override existing data. 
-                  </div>
-                )}
+            <div
+              className={styles.infoIconWrapper}
+              onMouseEnter={() => setShowTooltip(true)}
+              onMouseLeave={() => setShowTooltip(false)}
+            >
+              <span className={styles.infoIcon}>ⓘ</span>
+              {showTooltip && (
+                <div className={styles.tooltip}>
+                  Uploading your academic transcript will override existing data.
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+        <span className={styles.badge}>
+          Out of {settings?.grade_scale || 4.0}
+        </span>
+      </div>
+
+      {/* Horizontal Scrolling Gallery */}
+      <div className={styles.chartsGallery}>
+        {/* Cumulative GPA Chart Card */}
+        <div className={styles.chartCard}>
+          <h2 className={styles.srOnly}>Cumulative GPA over semesters with grade band highlights.</h2>
+          <div className={styles.chartCardHeader}>
+            <div>
+              <h1 className={styles.chartCardTitle}>Academic Progress</h1>
+              <p className={styles.chartCardSubtitle}>Cumulative GPA · All Semesters</p>
+            </div>
+          </div>
+          <div className={styles.contentLayout}>
+            <div className={styles.chartSection}>
+              <div className={styles.chartCanvasWrap}>
+                <Line
+                  ref={chartRef}
+                  data={chartData}
+                  options={options}
+                  plugins={[bandPlugin, mobileLabelsPlugin]}
+                  aria-label="Line chart of cumulative GPA from 3.62 to 3.94 across 8 semesters with coloured grade band regions"
+                />
+              </div>
+              <div className={styles.legendRow}>
+                <span className={styles.legendItem}>
+                  <span className={styles.legendDot}></span>
+                  <span>Regular semester</span>
+                </span>
+                <span className={styles.legendItem}>
+                  <span className={styles.legendSpecialDot}></span>
+                  <span>Exchange / Internship</span>
+                </span>
+              </div>
+            </div>
+            <div className={styles.statsColumn}>
+              <div className={styles.statCard}>
+                <div className={styles.label}>Starting GPA</div>
+                <div className={styles.value}>{startingGpa.toFixed(2)}</div>
+                <div className={styles.sub}>{startingLabel}</div>
+              </div>
+              <div className={styles.statCard}>
+                <div className={styles.label}>Current GPA</div>
+                <div className={styles.value}>{currentGpa.toFixed(2)}</div>
+                <div className={styles.sub}>{currentLabel}</div>
+              </div>
+              <div className={styles.statCard}>
+                <div className={styles.label}>Growth</div>
+                <div className={styles.value}>
+                  {percentageGrowth >= 0 ? '+' : ''}{percentageGrowth.toFixed(1)}%
+                  <span className={styles.absoluteGrowth}>
+                    ({absoluteGrowth >= 0 ? '+' : ''}{absoluteGrowth.toFixed(2)})
+                  </span>
+                </div>
+                <div className={styles.sub}>Over {yearSpan} {yearSpan === 1 ? 'year' : 'years'}</div>
               </div>
             </div>
           </div>
-          <span className={styles.badge}>
-            Out of {settings?.grade_scale || 4.0}
-          </span>
         </div>
-      </div>
-      <div className={styles.contentLayout}>
-        <div className={styles.chartSection}>
-          <div className={styles.chartCanvasWrap}>
-            <Line
-              ref={chartRef}
-              data={chartData}
-              options={options}
-              plugins={[bandPlugin, mobileLabelsPlugin]}
-              aria-label="Line chart of cumulative GPA from 3.62 to 3.94 across 8 semesters with coloured grade band regions"
-            />
-          </div>
-          <div className={styles.legendRow}>
-            <span className={styles.legendItem}>
-              <span className={styles.legendDot}></span>
-              <span>Regular semester</span>
-            </span>
-            <span className={styles.legendItem}>
-              <span className={styles.legendSpecialDot}></span>
-              <span>Exchange / Internship</span>
-            </span>
-          </div>
-        </div>
-        <div className={styles.statsColumn}>
-          <div className={styles.statCard}>
-            <div className={styles.label}>Starting GPA</div>
-            <div className={styles.value}>{startingGpa.toFixed(2)}</div>
-            <div className={styles.sub}>{startingLabel}</div>
-          </div>
-          <div className={styles.statCard}>
-            <div className={styles.label}>Current GPA</div>
-            <div className={styles.value}>{currentGpa.toFixed(2)}</div>
-            <div className={styles.sub}>{currentLabel}</div>
-          </div>
-          <div className={styles.statCard}>
-            <div className={styles.label}>Growth</div>
-            <div className={styles.value}>
-              {percentageGrowth >= 0 ? '+' : ''}{percentageGrowth.toFixed(1)}%
-              <span className={styles.absoluteGrowth}>
-                ({absoluteGrowth >= 0 ? '+' : ''}{absoluteGrowth.toFixed(2)})
-              </span>
-            </div>
-            <div className={styles.sub}>Over {yearSpan} {yearSpan === 1 ? 'year' : 'years'}</div>
-          </div>
-        </div>
-      </div>
 
-      {/* Grade Distribution Chart */}
-      {settings?.transcript_json?.chart_data && (
-        <>
-          <h2 className={styles.srOnly}>Grade distribution showing frequency of each grade.</h2>
-          <div style={{ marginTop: '3rem', borderTop: '1px solid #E0D6C8', paddingTop: '2rem' }}>
-            <div style={{ marginBottom: '2rem' }}>
-              <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: '22px', fontWeight: 500, color: '#2C2417', letterSpacing: '0.02em', margin: 0 }}>
-                Grade Distribution
-              </h1>
-              <p style={{ fontSize: '13px', color: '#8C7B68', fontWeight: 300, marginTop: '4px', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
-                Frequency of grades · All semesters
-              </p>
+        {/* Grade Distribution Chart Card */}
+        {settings?.transcript_json?.chart_data && (
+          <div className={styles.chartCard}>
+            <h2 className={styles.srOnly}>Grade distribution showing frequency of each grade.</h2>
+            <div className={styles.chartCardHeader}>
+              <div>
+                <h1 className={styles.chartCardTitle}>Grade Distribution</h1>
+                <p className={styles.chartCardSubtitle}>Frequency of grades · All semesters</p>
+              </div>
             </div>
             <div className={styles.contentLayout}>
               <div className={styles.chartSection}>
@@ -457,8 +461,8 @@ const GPATracker = () => {
               <GradeDistributionStats />
             </div>
           </div>
-        </>
-      )}
+        )}
+      </div>
 
       {showUpload && (
         <div className={styles.overlay} onClick={() => setShowUpload(false)}>
