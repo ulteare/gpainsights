@@ -211,14 +211,8 @@ export const GradeDistribution = ({ isMobile = false }) => {
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <h3 className={styles.title}>Grade Distribution</h3>
-        <p className={styles.subtitle}>Frequency of grades across all semesters</p>
-      </div>
-      <div className={styles.chartWrapper}>
-        <Bar data={chartData} options={options} />
-      </div>
+    <div className={styles.chartWrapper}>
+      <Bar data={chartData} options={options} />
     </div>
   );
 };

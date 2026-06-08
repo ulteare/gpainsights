@@ -16,6 +16,7 @@ import { useUserSettings } from './hooks/useUserSettings';
 import SemesterManager from './components/SemesterManager';
 import { TranscriptUpload } from './TranscriptUpload';
 import { GradeDistribution } from './components/GradeDistribution';
+import { GradeDistributionStats } from './components/GradeDistributionStats';
 import styles from './GPATracker.module.css';
 
 // Register ChartJS components
@@ -437,7 +438,27 @@ const GPATracker = () => {
       </div>
 
       {/* Grade Distribution Chart */}
-      <GradeDistribution isMobile={isMobile} />
+      {settings?.transcript_json?.chart_data && (
+        <>
+          <h2 className={styles.srOnly}>Grade distribution showing frequency of each grade.</h2>
+          <div style={{ marginTop: '3rem', borderTop: '1px solid #E0D6C8', paddingTop: '2rem' }}>
+            <div style={{ marginBottom: '2rem' }}>
+              <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: '22px', fontWeight: 500, color: '#2C2417', letterSpacing: '0.02em', margin: 0 }}>
+                Grade Distribution
+              </h1>
+              <p style={{ fontSize: '13px', color: '#8C7B68', fontWeight: 300, marginTop: '4px', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                Frequency of grades · All semesters
+              </p>
+            </div>
+            <div className={styles.contentLayout}>
+              <div className={styles.chartSection}>
+                <GradeDistribution isMobile={isMobile} />
+              </div>
+              <GradeDistributionStats />
+            </div>
+          </div>
+        </>
+      )}
 
       {showUpload && (
         <div className={styles.overlay} onClick={() => setShowUpload(false)}>
