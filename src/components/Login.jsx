@@ -54,7 +54,7 @@ const Login = () => {
         </div>
 
         <div className={styles.valueProps}>
-          <h2>What you can do</h2>
+          <h2>What you get</h2>
           <ul>
             <li>Chart GPA on a pretty chart</li>
             <li>View distribution of grades</li>
@@ -64,6 +64,7 @@ const Login = () => {
 
         <div className={styles.instructions}>
           <h2>How to get started</h2>
+          <p>This app is currently for SMU students only. You'll need to have your SMU unofficial academic transcript. Here's how to get it:</p>
           <ol>
             <li>
               <p>1. Go to SMU Oasis and search for unofficial transcript</p>
