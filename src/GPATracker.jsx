@@ -6,6 +6,7 @@ import {
   LinearScale,
   PointElement,
   LineElement,
+  BarElement,
   Title,
   Tooltip,
   Legend,
@@ -14,6 +15,7 @@ import { useSemesters } from './hooks/useSemesters';
 import { useUserSettings } from './hooks/useUserSettings';
 import SemesterManager from './components/SemesterManager';
 import { TranscriptUpload } from './TranscriptUpload';
+import { GradeDistribution } from './components/GradeDistribution';
 import styles from './GPATracker.module.css';
 
 // Register ChartJS components
@@ -22,6 +24,7 @@ ChartJS.register(
   LinearScale,
   PointElement,
   LineElement,
+  BarElement,
   Title,
   Tooltip,
   Legend
@@ -432,6 +435,9 @@ const GPATracker = () => {
           </div>
         </div>
       </div>
+
+      {/* Grade Distribution Chart */}
+      <GradeDistribution isMobile={isMobile} />
 
       {showUpload && (
         <div className={styles.overlay} onClick={() => setShowUpload(false)}>
