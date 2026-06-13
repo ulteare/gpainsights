@@ -237,6 +237,22 @@
   gap: 6px;
 }
 
+.legendLine {
+  display: inline-block;
+  width: 20px;
+  height: 3px;
+  background: #6B4E2A;
+  vertical-align: middle;
+}
+
+.legendLineFaint {
+  display: inline-block;
+  width: 20px;
+  height: 2px;
+  background: rgba(107, 78, 42, 0.3);
+  vertical-align: middle;
+}
+
 .legendDot {
   width: 10px;
   height: 10px;

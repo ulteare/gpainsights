@@ -32,11 +32,29 @@ const SemesterManager = ({ semesters, onClose, onUpdate }) => {
 
           if (coursesError) throw coursesError;
 
+          // Calculate term GPA from courses
+          let termGpa = null;
+          if (courses && courses.length > 0) {
+            const gradedCourses = courses.filter(c => c.graded && c.grade_points !== null);
+
+            if (gradedCourses.length > 0) {
+              let totalGradePoints = 0;
+              let totalUnits = 0;
+
+              gradedCourses.forEach(course => {
+                totalGradePoints += course.grade_points * course.units_earned;
+                totalUnits += course.units_earned;
+              });
+
+              termGpa = totalUnits > 0 ? totalGradePoints / totalUnits : null;
+            }
+          }
+
           return {
             ...semester,
             label: semester.semester_label,
             courses: courses || [],
-            term_gpa: semester.gpa,
+            term_gpa: termGpa,
             cumulative_gpa: semester.gpa,
           };
         })

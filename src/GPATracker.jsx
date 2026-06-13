@@ -140,10 +140,12 @@ const GPATracker = () => {
       .map(d => d.sem)
   );
 
-  // Calculate dynamic y-axis range with capped GPAs
+  // Calculate dynamic y-axis range with capped GPAs (considering both cumulative and term)
   const cappedGpas = data.map(d => capGPA(d.gpa));
-  const minGpa = Math.min(...cappedGpas);
-  const maxGpa = Math.max(...cappedGpas);
+  const cappedTermGpas = data.map(d => d.term_gpa ? capGPA(d.term_gpa) : null).filter(g => g !== null);
+  const allGpas = [...cappedGpas, ...cappedTermGpas];
+  const minGpa = Math.min(...allGpas);
+  const maxGpa = Math.max(...allGpas);
 
   // Calculate y-axis min/max with 0.1 padding
   const yMin = Math.max(0.0, Math.floor((minGpa - 0.1) * 10) / 10);
@@ -266,19 +268,35 @@ const GPATracker = () => {
 
   const chartData = {
     labels: data.map(d => d.sem),
-    datasets: [{
-      label: 'Cumulative GPA',
-      data: data.map(d => capGPA(d.gpa)),
-      fill: false,
-      borderColor: '#6B4E2A',
-      borderWidth: 2.5,
-      tension: 0,
-      pointBackgroundColor: data.map(d => exchangeSems.has(d.sem) ? '#ebe7e2' : '#6B4E2A'),
-      pointBorderColor: data.map(d => exchangeSems.has(d.sem) ? '#6B4E2A' : '#6B4E2A'),
-      pointBorderWidth: data.map(d => exchangeSems.has(d.sem) ? 2.5 : 0),
-      pointRadius: 7,
-      pointHoverRadius: 9,
-    }]
+    datasets: [
+      {
+        label: 'Term GPA',
+        data: data.map(d => d.term_gpa ? capGPA(d.term_gpa) : null),
+        fill: false,
+        borderColor: 'rgba(107, 78, 42, 0.3)',
+        borderWidth: 2,
+        tension: 0,
+        pointBackgroundColor: 'rgba(107, 78, 42, 0.3)',
+        pointBorderColor: 'rgba(107, 78, 42, 0.3)',
+        pointBorderWidth: 0,
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        spanGaps: true,
+      },
+      {
+        label: 'Cumulative GPA',
+        data: data.map(d => capGPA(d.gpa)),
+        fill: false,
+        borderColor: '#6B4E2A',
+        borderWidth: 2.5,
+        tension: 0,
+        pointBackgroundColor: data.map(d => exchangeSems.has(d.sem) ? '#ebe7e2' : '#6B4E2A'),
+        pointBorderColor: data.map(d => exchangeSems.has(d.sem) ? '#6B4E2A' : '#6B4E2A'),
+        pointBorderWidth: data.map(d => exchangeSems.has(d.sem) ? 2.5 : 0),
+        pointRadius: 7,
+        pointHoverRadius: 9,
+      }
+    ]
   };
 
   const options = {
@@ -303,16 +321,30 @@ const GPATracker = () => {
             return;
           }
           const idx = model.dataPoints[0].dataIndex;
+          const datasetIndex = model.dataPoints[0].datasetIndex;
           const d = data[idx];
-          console.log('Tooltip data:', d);
-          const gpa = capGPA(d.gpa);
-          const band = bands.find(b => gpa >= b.min && gpa < b.max) || (gpa >= 3.9 ? bands[0] : null);
-          el.innerHTML = `
-            <div class="${styles.tooltipSem}">${d.label}${d.note ? ' · ' + d.note : ''}</div>
-            <div class="${styles.tooltipGpa}">${gpa.toFixed(2)}</div>
-            ${d.term_gpa ? `<div class="${styles.tooltipTermGpa}">Term: ${d.term_gpa.toFixed(2)}</div>` : ''}
-            ${band ? `<div class="${styles.tooltipBand}">${band.label}</div>` : ''}
-          `;
+
+          // Check if hovering over Term GPA (dataset 0) or Cumulative GPA (dataset 1)
+          if (datasetIndex === 0) {
+            // Hovering over Term GPA line - show only term GPA
+            const termGpa = d.term_gpa ? capGPA(d.term_gpa) : null;
+            if (termGpa) {
+              el.innerHTML = `
+                <div class="${styles.tooltipSem}">${d.label}</div>
+                <div class="${styles.tooltipGpa}">Term: ${termGpa.toFixed(2)}</div>
+              `;
+            }
+          } else {
+            // Hovering over Cumulative GPA line - show cumulative + term + band
+            const gpa = capGPA(d.gpa);
+            const band = bands.find(b => gpa >= b.min && gpa < b.max) || (gpa >= 3.9 ? bands[0] : null);
+            el.innerHTML = `
+              <div class="${styles.tooltipSem}">${d.label}${d.note ? ' · ' + d.note : ''}</div>
+              <div class="${styles.tooltipGpa}">${gpa.toFixed(2)}</div>
+              ${d.term_gpa ? `<div class="${styles.tooltipTermGpa}">Term: ${d.term_gpa.toFixed(2)}</div>` : ''}
+              ${band ? `<div class="${styles.tooltipBand}">${band.label}</div>` : ''}
+            `;
+          }
           el.style.display = 'block';
           const canvasEl = context.chart.canvas;
           el.style.left = (canvasEl.offsetLeft + model.caretX - el.offsetWidth / 2) + 'px';
@@ -417,6 +449,14 @@ const GPATracker = () => {
             />
           </div>
           <div className={styles.legendRow}>
+            <span className={styles.legendItem}>
+              <span className={styles.legendLine}></span>
+              <span>Cumulative GPA</span>
+            </span>
+            <span className={styles.legendItem}>
+              <span className={styles.legendLineFaint}></span>
+              <span>Term GPA</span>
+            </span>
             <span className={styles.legendItem}>
               <span className={styles.legendDot}></span>
               <span>Regular semester</span>

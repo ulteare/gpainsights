@@ -29,7 +29,7 @@ export const SemesterEditor = ({
       });
     });
 
-    const gpa = totalUnits > 0 ? parseFloat((totalGradePoints / totalUnits).toFixed(2)) : 0;
+    const gpa = totalUnits > 0 ? totalGradePoints / totalUnits : 0;
     return { gpa, units_earned: totalUnits };
   };
 
@@ -52,7 +52,7 @@ export const SemesterEditor = ({
           }
         });
 
-        termGPA = termUnits > 0 ? parseFloat((termGradePoints / termUnits).toFixed(2)) : 0;
+        termGPA = termUnits > 0 ? termGradePoints / termUnits : 0;
       }
 
       // Add this semester's courses to cumulative totals
@@ -63,9 +63,9 @@ export const SemesterEditor = ({
         }
       });
 
-      // Calculate cumulative GPA
+      // Calculate cumulative GPA (keep full precision)
       const cumulativeGPA = cumulativeUnits > 0
-        ? parseFloat((cumulativeGradePoints / cumulativeUnits).toFixed(2))
+        ? cumulativeGradePoints / cumulativeUnits
         : lastCumulativeGPA;
 
       // Store this cumulative GPA for next iteration
@@ -169,7 +169,7 @@ export const SemesterEditor = ({
         <div className={styles.statsPreview}>
           <div className={styles.statItem}>
             <span>Cumulative GPA:</span>
-            <strong>{calculateCumulativeStats(semestersData).gpa}</strong>
+            <strong>{calculateCumulativeStats(semestersData).gpa.toFixed(2)}</strong>
           </div>
           <div className={styles.statItem}>
             <span>Units Earned:</span>
@@ -223,12 +223,16 @@ export const SemesterEditor = ({
                 {semester.note !== 'Exchange / Internship' && (
                   <div className={styles.gpaItem}>
                     <label>Term GPA</label>
-                    <span className={styles.gpaValue}>{semester.term_gpa || semester.gpa}</span>
+                    <span className={styles.gpaValue}>
+                      {(semester.term_gpa || semester.gpa || 0).toFixed(2)}
+                    </span>
                   </div>
                 )}
                 <div className={styles.gpaItem}>
                   <label>Cumulative GPA</label>
-                  <span className={styles.gpaValue}>{semester.cumulative_gpa || semester.gpa}</span>
+                  <span className={styles.gpaValue}>
+                    {(semester.cumulative_gpa || semester.gpa || 0).toFixed(2)}
+                  </span>
                 </div>
               </div>
             </div>
