@@ -406,6 +406,23 @@
   font-style: italic;
 }
 
+.privacyNotice {
+  background: #F0F9FF;
+  border: 1px solid #BAE6FD;
+  border-radius: 8px;
+  padding: 12px 20px;
+  margin-top: 2rem;
+  max-width: 700px;
+}
+
+.privacyNotice p {
+  font-family: 'Jost', sans-serif;
+  margin: 0;
+  color: #0C4A6E;
+  line-height: 1.6;
+  font-size: 0.75rem;
+}
+
 .ctaButton {
   font-family: 'Jost', sans-serif;
   font-size: 1rem;

@@ -205,6 +205,10 @@ export const TranscriptUpload = ({ onSuccess, onCancel }) => {
             <p>Upload your unofficial SMU transcript PDF to automatically import your grades.</p>
           </div>
 
+          <div className={styles.privacyNotice}>
+            <p>By uploading your transcript, you acknowledge and consent that your academic data will be stored and processed solely for the purpose of visualizing your GPA progress. We are committed to protecting your personal data in accordance with Singapore's Personal Data Protection Act (PDPA).</p>
+          </div>
+
           <div
             className={`${styles.dropZone} ${dragActive ? styles.dragActive : ''}`}
             onDragEnter={handleDrag}

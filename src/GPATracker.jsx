@@ -88,6 +88,10 @@ const GPATracker = () => {
             For SMU students only • Upload non-official transcript
           </p>
 
+          <div className={styles.privacyNotice}>
+            <p>By uploading your transcript, you acknowledge and consent that your academic data will be stored and processed solely for the purpose of visualizing your GPA progress. We are committed to protecting your personal data in accordance with Singapore's Personal Data Protection Act (PDPA).</p>
+          </div>
+
           <div className={styles.instructionsGrid}>
             <div className={styles.instructionStep}>
               <p>1. Go to SMU Oasis and search for unofficial transcript</p>
