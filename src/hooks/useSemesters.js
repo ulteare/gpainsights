@@ -58,11 +58,6 @@ export const useSemesters = () => {
           }
         }
 
-        console.log(`Semester ${semester.semester_label}:`, {
-          courses: semester.courses?.length || 0,
-          termGpa,
-        });
-
         return {
           ...semester, // Keep all original fields for manager
           sem: semester.semester_code,

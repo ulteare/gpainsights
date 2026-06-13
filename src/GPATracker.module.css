@@ -237,6 +237,23 @@
   gap: 6px;
 }
 
+.legendCheckbox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  color: #8C7B68;
+  user-select: none;
+}
+
+.legendCheckbox input[type="checkbox"] {
+  cursor: pointer;
+  width: 14px;
+  height: 14px;
+  accent-color: #6B4E2A;
+}
+
 .legendLine {
   display: inline-block;
   width: 20px;

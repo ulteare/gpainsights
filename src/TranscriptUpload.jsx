@@ -123,22 +123,16 @@ export const TranscriptUpload = ({ onSuccess, onCancel }) => {
       // Import to database (will override existing data)
       const result = await importTranscriptData(parsedData, { override: true });
 
-      console.log('Import result:', result);
-
       if (result.success) {
         setParseStatus('Success!');
         setSelectedFile(null);
         setParsedData(null);
         setShowPreview(false);
-        console.log('Calling onSuccess callback');
         // Call onSuccess which will close modal and refetch in parent
         if (onSuccess) {
           onSuccess();
-        } else {
-          console.error('onSuccess callback is not defined');
         }
       } else {
-        console.error('Import failed:', result.error);
         alert(`Import failed: ${result.error}`);
       }
     } catch (err) {

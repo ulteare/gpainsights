@@ -34,6 +34,7 @@ const GPATracker = () => {
   const [showManager, setShowManager] = useState(false);
   const [showUpload, setShowUpload] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
+  const [showTermGpa, setShowTermGpa] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   useEffect(() => {
@@ -143,9 +144,9 @@ const GPATracker = () => {
   // Calculate dynamic y-axis range with capped GPAs
   const cappedGpas = data.map(d => capGPA(d.gpa));
 
-  // On mobile, only consider cumulative GPA; on desktop, consider both
+  // On mobile or when term GPA hidden, only consider cumulative GPA; otherwise consider both
   let minGpa, maxGpa;
-  if (isMobile) {
+  if (isMobile || !showTermGpa) {
     minGpa = Math.min(...cappedGpas);
     maxGpa = Math.max(...cappedGpas);
   } else {
@@ -280,8 +281,8 @@ const GPATracker = () => {
   const chartData = {
     labels: data.map(d => d.sem),
     datasets: [
-      // Only show Term GPA line on desktop
-      ...(!isMobile ? [{
+      // Only show Term GPA line on desktop and when checkbox is checked
+      ...(!isMobile && showTermGpa ? [{
         label: 'Term GPA',
         data: data.map(d => d.term_gpa ? capGPA(d.term_gpa) : null),
         fill: false,
@@ -336,8 +337,10 @@ const GPATracker = () => {
           const datasetIndex = model.dataPoints[0].datasetIndex;
           const d = data[idx];
 
-          // Check if hovering over Term GPA (dataset 0) or Cumulative GPA (dataset 1)
-          if (datasetIndex === 0) {
+          // Determine if this is Term GPA or Cumulative GPA based on dataset label
+          const datasetLabel = context.chart.data.datasets[datasetIndex].label;
+
+          if (datasetLabel === 'Term GPA') {
             // Hovering over Term GPA line - show only term GPA
             const termGpa = d.term_gpa ? capGPA(d.term_gpa) : null;
             if (termGpa) {
@@ -462,16 +465,26 @@ const GPATracker = () => {
           </div>
           <div className={styles.legendRow}>
             {!isMobile && (
-              <span className={styles.legendItem}>
-                <span className={styles.legendLine}></span>
-                <span>Cumulative GPA</span>
-              </span>
+              <label className={styles.legendCheckbox}>
+                <input
+                  type="checkbox"
+                  checked={showTermGpa}
+                  onChange={(e) => setShowTermGpa(e.target.checked)}
+                />
+                <span>Show Term GPA</span>
+              </label>
             )}
-            {!isMobile && (
-              <span className={styles.legendItem}>
-                <span className={styles.legendLineFaint}></span>
-                <span>Term GPA</span>
-              </span>
+            {!isMobile && showTermGpa && (
+              <>
+                <span className={styles.legendItem}>
+                  <span className={styles.legendLine}></span>
+                  <span>Cumulative GPA</span>
+                </span>
+                <span className={styles.legendItem}>
+                  <span className={styles.legendLineFaint}></span>
+                  <span>Term GPA</span>
+                </span>
+              </>
             )}
             <span className={styles.legendItem}>
               <span className={styles.legendDot}></span>
