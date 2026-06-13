@@ -90,7 +90,7 @@ export const TranscriptUpload = ({ onSuccess, onCancel }) => {
 
         return {
           ...semester,
-          cumulative_gpa: parseFloat(cumulativeGPA.toFixed(2)),
+          cumulative_gpa: cumulativeGPA,
         };
       });
 
