@@ -183,18 +183,13 @@ function validateTranscript(rawText, semesters, cumulative) {
 
   // Check if we found actual data
   const hasValidSemesters = semesters.length > 0 && semesters.some(s => s.courses.length > 0);
-  const hasValidCumulative = cumulative && cumulative.gpa !== undefined;
 
   if (!hasSMUHeader) {
-    throw new Error('This does not appear to be an SMU transcript. Please upload your official SMU academic transcript.');
+    throw new Error('This does not appear to be an SMU transcript. Please upload your SMU academic transcript.');
   }
 
   if (!hasTranscriptMarkers) {
-    throw new Error('Unable to find transcript data in this PDF. Please ensure you uploaded an official SMU academic transcript.');
-  }
-
-  if (!hasValidSemesters && !hasValidCumulative) {
-    throw new Error('No academic data found in this transcript. Please check that you uploaded the correct file.');
+    throw new Error('Unable to find transcript data in this PDF. Please ensure you uploaded a valid SMU academic transcript.');
   }
 
   if (!hasValidSemesters) {
