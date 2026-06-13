@@ -1,6 +1,5 @@
 import { useState, useRef } from 'react';
 import { useTranscriptUpload } from './hooks/useTranscriptUpload';
-import { useSemesters } from './hooks/useSemesters';
 import { useUserSettings } from './hooks/useUserSettings';
 import { parseTranscript } from './utils/transcriptParser';
 import { SemesterEditor } from './components/SemesterEditor';
@@ -8,7 +7,6 @@ import styles from './TranscriptUpload.module.css';
 
 export const TranscriptUpload = ({ onSuccess, onCancel }) => {
   const { importTranscriptData, uploading, error } = useTranscriptUpload();
-  const { refetch } = useSemesters();
   const { saveTranscriptJson } = useUserSettings();
   const [dragActive, setDragActive] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -125,14 +123,23 @@ export const TranscriptUpload = ({ onSuccess, onCancel }) => {
       // Import to database (will override existing data)
       const result = await importTranscriptData(parsedData, { override: true });
 
+      console.log('Import result:', result);
+
       if (result.success) {
         setParseStatus('Success!');
-        // Refresh semesters data
-        await refetch();
         setSelectedFile(null);
         setParsedData(null);
         setShowPreview(false);
-        if (onSuccess) onSuccess();
+        console.log('Calling onSuccess callback');
+        // Call onSuccess which will close modal and refetch in parent
+        if (onSuccess) {
+          onSuccess();
+        } else {
+          console.error('onSuccess callback is not defined');
+        }
+      } else {
+        console.error('Import failed:', result.error);
+        alert(`Import failed: ${result.error}`);
       }
     } catch (err) {
       console.error('Error importing transcript:', err);

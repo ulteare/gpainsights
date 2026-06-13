@@ -121,10 +121,10 @@ export const useTranscriptUpload = () => {
         .from('cumulative_stats')
         .upsert({
           user_id: user.id,
-          units_exempted: transcriptData.cumulative.units_exempted || 0,
-          units_transferred: transcriptData.cumulative.units_transferred || 0,
-          units_earned: transcriptData.cumulative.units_earned,
-          cumulative_gpa: transcriptData.cumulative.gpa,
+          units_exempted: transcriptData.cumulative?.units_exempted || 0,
+          units_transferred: transcriptData.cumulative?.units_transferred || 0,
+          units_earned: transcriptData.cumulative?.units_earned || 0,
+          cumulative_gpa: transcriptData.cumulative?.gpa || 0,
           updated_at: new Date().toISOString(),
         }, {
           onConflict: 'user_id',
