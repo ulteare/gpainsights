@@ -140,12 +140,20 @@ const GPATracker = () => {
       .map(d => d.sem)
   );
 
-  // Calculate dynamic y-axis range with capped GPAs (considering both cumulative and term)
+  // Calculate dynamic y-axis range with capped GPAs
   const cappedGpas = data.map(d => capGPA(d.gpa));
-  const cappedTermGpas = data.map(d => d.term_gpa ? capGPA(d.term_gpa) : null).filter(g => g !== null);
-  const allGpas = [...cappedGpas, ...cappedTermGpas];
-  const minGpa = Math.min(...allGpas);
-  const maxGpa = Math.max(...allGpas);
+
+  // On mobile, only consider cumulative GPA; on desktop, consider both
+  let minGpa, maxGpa;
+  if (isMobile) {
+    minGpa = Math.min(...cappedGpas);
+    maxGpa = Math.max(...cappedGpas);
+  } else {
+    const cappedTermGpas = data.map(d => d.term_gpa ? capGPA(d.term_gpa) : null).filter(g => g !== null);
+    const allGpas = [...cappedGpas, ...cappedTermGpas];
+    minGpa = Math.min(...allGpas);
+    maxGpa = Math.max(...allGpas);
+  }
 
   // Calculate y-axis min/max with 0.1 padding
   const yMin = Math.max(0.0, Math.floor((minGpa - 0.1) * 10) / 10);
@@ -243,6 +251,7 @@ const GPATracker = () => {
       if (!isMobile) return;
 
       const { ctx, data: chartData, scales: { x, y } } = chart;
+      // On mobile, Cumulative GPA is the only dataset (index 0)
       const dataset = chartData.datasets[0];
 
       ctx.save();
@@ -251,6 +260,8 @@ const GPATracker = () => {
       ctx.textAlign = 'center';
 
       dataset.data.forEach((value, index) => {
+        if (value === null) return; // Skip null values
+
         const xPos = x.getPixelForValue(index);
         const yPos = y.getPixelForValue(value);
 
@@ -269,7 +280,8 @@ const GPATracker = () => {
   const chartData = {
     labels: data.map(d => d.sem),
     datasets: [
-      {
+      // Only show Term GPA line on desktop
+      ...(!isMobile ? [{
         label: 'Term GPA',
         data: data.map(d => d.term_gpa ? capGPA(d.term_gpa) : null),
         fill: false,
@@ -282,7 +294,7 @@ const GPATracker = () => {
         pointRadius: data.map(d => d.term_gpa ? 5 : 0),
         pointHoverRadius: data.map(d => d.term_gpa ? 7 : 0),
         spanGaps: false,
-      },
+      }] : []),
       {
         label: 'Cumulative GPA',
         data: data.map(d => capGPA(d.gpa)),
@@ -449,14 +461,18 @@ const GPATracker = () => {
             />
           </div>
           <div className={styles.legendRow}>
-            <span className={styles.legendItem}>
-              <span className={styles.legendLine}></span>
-              <span>Cumulative GPA</span>
-            </span>
-            <span className={styles.legendItem}>
-              <span className={styles.legendLineFaint}></span>
-              <span>Term GPA</span>
-            </span>
+            {!isMobile && (
+              <span className={styles.legendItem}>
+                <span className={styles.legendLine}></span>
+                <span>Cumulative GPA</span>
+              </span>
+            )}
+            {!isMobile && (
+              <span className={styles.legendItem}>
+                <span className={styles.legendLineFaint}></span>
+                <span>Term GPA</span>
+              </span>
+            )}
             <span className={styles.legendItem}>
               <span className={styles.legendDot}></span>
               <span>Regular semester</span>
