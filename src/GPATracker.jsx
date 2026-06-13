@@ -126,12 +126,13 @@ const GPATracker = () => {
     );
   }
 
-  // Get grade scale (4.0 for SMU, 5.0 for NUS/NTU)
+  // Get grade scale (4.3 for SMU, 5.0 for NUS/NTU)
   const gradeScale = settings?.grade_scale || 4.0;
   const isSMU = gradeScale === 4.0;
+  const maxGradeScale = isSMU ? 4.3 : 5.0;
 
   // Helper function to cap GPA at grade scale
-  const capGPA = (gpa) => isSMU ? Math.min(gpa, 4.0) : gpa;
+  const capGPA = (gpa) => Math.min(gpa, maxGradeScale);
 
   // Determine which semesters are special (exchange/internship)
   const exchangeSems = new Set(
@@ -144,9 +145,24 @@ const GPATracker = () => {
   const minGpa = Math.min(...cappedGpas);
   const maxGpa = Math.max(...cappedGpas);
 
-  // Calculate y-axis min/max with 0.1 padding, but respect grade scale bounds
+  // Calculate y-axis min/max with 0.1 padding
   const yMin = Math.max(0.0, Math.floor((minGpa - 0.1) * 10) / 10);
-  const yMax = Math.min(gradeScale, Math.ceil((maxGpa + 0.1) * 10) / 10);
+
+  // For SMU: cap at 4.0 unless there are values > 4.0, then round up to nearest 0.1
+  let yMax;
+  if (isSMU) {
+    if (maxGpa > 4.0) {
+      // User has grades above 4.0, round up to nearest 0.1 (no padding), cap at 4.3
+      yMax = Math.min(maxGradeScale, Math.ceil(maxGpa * 10) / 10);
+    } else {
+      // Cap at 4.0, don't show padding above 4.0
+      const calculatedMax = Math.ceil((maxGpa + 0.1) * 10) / 10;
+      yMax = Math.min(4.0, calculatedMax);
+    }
+  } else {
+    // For NUS/NTU, always use normal padding
+    yMax = Math.min(maxGradeScale, Math.ceil((maxGpa + 0.1) * 10) / 10);
+  }
 
   // Calculate stats for display with capped values
   const startingGpa = capGPA(data[0].gpa);
@@ -163,7 +179,7 @@ const GPATracker = () => {
 
   // Define grade bands based on school
   const bands = isSMU ? [
-    { label: 'Peak 🏔️', min: 3.90, max: 4.00, fill: 'rgba(62,35,10,0.38)', labelColor: '#FAF8F5', fontWeight: 500 },
+    { label: 'Peak 🏔️', min: 3.90, max: 4.30, fill: 'rgba(62,35,10,0.38)', labelColor: '#FAF8F5', fontWeight: 500 },
     { label: 'Summa Cum Laude 🥇', min: 3.80, max: 3.90, fill: 'rgba(95,58,18,0.28)', labelColor: '#FAF8F5', fontWeight: 500 },
     { label: "Dean's List 📖", min: 3.70, max: 3.80, fill: 'rgba(140,90,35,0.20)', labelColor: 'rgba(140,100,50,1)', fontWeight: 500 },
     { label: 'Magna Cum Laude 🥈', min: 3.60, max: 3.70, fill: 'rgba(180,130,65,0.14)', labelColor: 'rgba(120,85,40,1)', fontWeight: 500 },
@@ -288,11 +304,13 @@ const GPATracker = () => {
           }
           const idx = model.dataPoints[0].dataIndex;
           const d = data[idx];
+          console.log('Tooltip data:', d);
           const gpa = capGPA(d.gpa);
           const band = bands.find(b => gpa >= b.min && gpa < b.max) || (gpa >= 3.9 ? bands[0] : null);
           el.innerHTML = `
             <div class="${styles.tooltipSem}">${d.label}${d.note ? ' · ' + d.note : ''}</div>
             <div class="${styles.tooltipGpa}">${gpa.toFixed(2)}</div>
+            ${d.term_gpa ? `<div class="${styles.tooltipTermGpa}">Term: ${d.term_gpa.toFixed(2)}</div>` : ''}
             ${band ? `<div class="${styles.tooltipBand}">${band.label}</div>` : ''}
           `;
           el.style.display = 'block';
