@@ -457,6 +457,7 @@ const GPATracker = () => {
           <div className={styles.chartCanvasWrap}>
             <Line
               ref={chartRef}
+              key={`chart-${showTermGpa}`}
               data={chartData}
               options={options}
               plugins={[bandPlugin, mobileLabelsPlugin]}
