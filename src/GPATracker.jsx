@@ -40,6 +40,7 @@ const GPATracker = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [gradeModalData, setGradeModalData] = useState(null);
   const [showGradeDistCallout, setShowGradeDistCallout] = useState(true);
+  const [semesterModalData, setSemesterModalData] = useState(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -363,9 +364,21 @@ const GPATracker = () => {
     ]
   };
 
+  const handleGpaChartClick = (event, elements) => {
+    if (elements.length > 0) {
+      const index = elements[0].index;
+      const semester = data[index];
+      setSemesterModalData(semester);
+    }
+  };
+
   const options = {
     responsive: true,
     maintainAspectRatio: false,
+    onClick: handleGpaChartClick,
+    onHover: (event, chartElement) => {
+      event.native.target.style.cursor = chartElement.length > 0 ? 'pointer' : 'default';
+    },
     plugins: {
       legend: { display: false },
       tooltip: {
@@ -760,6 +773,46 @@ const GPATracker = () => {
       </div>
 
       <div style={{ height: '8rem' }}></div>
+
+      {semesterModalData && (
+        <div className={styles.overlay} onClick={() => setSemesterModalData(null)}>
+          <div className={styles.semesterModal} onClick={(e) => e.stopPropagation()}>
+            <button onClick={() => setSemesterModalData(null)} className={styles.closeButton}>✕</button>
+            <div className={styles.semesterModalHeader}>
+              <h2>{semesterModalData.label}</h2>
+              {semesterModalData.note ? (
+                <p className={styles.semesterNote}>{semesterModalData.note}</p>
+              ) : (
+                <>
+                  <div className={styles.gpaRow}>
+                    <div className={styles.gpaItem}>
+                      <span className={styles.gpaLabel}>Term GPA</span>
+                      <span className={styles.gpaValue}>{semesterModalData.term_gpa ? capGPA(semesterModalData.term_gpa).toFixed(2) : 'N/A'}</span>
+                    </div>
+                    <div className={styles.gpaItem}>
+                      <span className={styles.gpaLabel}>Cumulative GPA</span>
+                      <span className={styles.gpaValue}>{capGPA(semesterModalData.gpa).toFixed(2)}</span>
+                    </div>
+                  </div>
+                  {semesterModalData.courses && semesterModalData.courses.length > 0 && (
+                    <div className={styles.semesterModalContent}>
+                      <h3>Courses</h3>
+                      {semesterModalData.courses.map((course, idx) => (
+                        <div key={idx} className={styles.courseItem}>
+                          <div className={styles.courseInfo}>
+                            <div className={styles.courseName}>{course.name}</div>
+                            <div className={styles.courseGrade}>{course.grade}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {gradeModalData && (
         <div className={styles.overlay} onClick={() => setGradeModalData(null)}>
