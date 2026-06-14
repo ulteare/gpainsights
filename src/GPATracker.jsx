@@ -42,13 +42,14 @@ const GPATracker = () => {
   const [showGradeDistCallout, setShowGradeDistCallout] = useState(true);
   const [semesterModalData, setSemesterModalData] = useState(null);
   const [showGpaChartCallout, setShowGpaChartCallout] = useState(true);
+  const [showBrowserWarning, setShowBrowserWarning] = useState(true);
 
   // Check if browser is Chrome
   const isChrome = () => {
     const ua = navigator.userAgent;
     return ua.includes('Chrome') && !ua.includes('Edg') && !ua.includes('Arc');
   };
-  const showBrowserWarning = !isChrome();
+  const shouldShowWarning = !isChrome() && showBrowserWarning;
 
   useEffect(() => {
     const handleResize = () => {
@@ -89,9 +90,16 @@ const GPATracker = () => {
   if (!data || data.length === 0) {
     return (
       <>
-        {showBrowserWarning && (
+        {shouldShowWarning && (
           <div className={styles.browserWarning}>
-            ⚠️ For the best experience uploading transcripts, please use Google Chrome
+            <span>⚠️ For the best experience uploading transcripts, please use Google Chrome</span>
+            <button
+              onClick={() => setShowBrowserWarning(false)}
+              className={styles.warningCloseButton}
+              aria-label="Dismiss"
+            >
+              ✕
+            </button>
           </div>
         )}
         <div className={styles.emptyState}>
