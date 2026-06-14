@@ -766,7 +766,7 @@ const GPATracker = () => {
           <div className={styles.gradeModal} onClick={(e) => e.stopPropagation()}>
             <button onClick={() => setGradeModalData(null)} className={styles.closeButton}>✕</button>
             <div className={styles.gradeModalHeader}>
-              <h2>Grade {gradeModalData.grade}</h2>
+              <h2>{gradeModalData.grade} Courses</h2>
               <p>{gradeModalData.courses.length} {gradeModalData.courses.length === 1 ? 'course' : 'courses'}</p>
             </div>
             <div className={styles.gradeModalContent}>

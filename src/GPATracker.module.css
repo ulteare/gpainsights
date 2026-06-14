@@ -721,20 +721,23 @@
 .gradeModalContent {
   display: flex;
   flex-direction: column;
-  gap: 12px;
 }
 
 .courseItem {
-  background: #F5EFE6;
-  border: 1px solid #E0D6C8;
-  border-radius: 8px;
-  padding: 16px;
-  transition: all 0.2s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #E0D6C8;
+  transition: background 0.2s ease;
+}
+
+.courseItem:last-child {
+  border-bottom: none;
 }
 
 .courseItem:hover {
-  background: #EDE5D8;
-  border-color: #D0C4B4;
+  background: #FAF8F5;
 }
 
 .courseInfo {
@@ -742,19 +745,20 @@
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
+  width: 100%;
 }
 
 .courseName {
   font-family: 'Jost', sans-serif;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   color: #2C2417;
   flex: 1;
 }
 
 .courseSemester {
   font-family: 'Jost', sans-serif;
-  font-size: 12px;
+  font-size: 13px;
   color: #8C7B68;
   font-weight: 400;
   white-space: nowrap;
