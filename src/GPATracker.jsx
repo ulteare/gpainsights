@@ -41,6 +41,7 @@ const GPATracker = () => {
   const [gradeModalData, setGradeModalData] = useState(null);
   const [showGradeDistCallout, setShowGradeDistCallout] = useState(true);
   const [semesterModalData, setSemesterModalData] = useState(null);
+  const [showGpaChartCallout, setShowGpaChartCallout] = useState(true);
 
   useEffect(() => {
     const handleResize = () => {
@@ -655,6 +656,18 @@ const GPATracker = () => {
           </span>
         </div>
       </div>
+      {showGpaChartCallout && (
+        <div className={styles.gpaChartCallout}>
+          <span>💡 Click on any point to view semester details</span>
+          <button
+            onClick={() => setShowGpaChartCallout(false)}
+            className={styles.calloutCloseButton}
+            aria-label="Dismiss"
+          >
+            ✕
+          </button>
+        </div>
+      )}
       <div className={styles.contentLayout}>
         <div className={styles.chartSection}>
           <div className={styles.chartCanvasWrap}>

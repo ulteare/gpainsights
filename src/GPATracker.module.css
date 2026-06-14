@@ -640,6 +640,7 @@
   text-transform: uppercase;
 }
 
+.gpaChartCallout,
 .gradeDistCallout {
   background: #F0F9FF;
   border: 1px solid #BAE6FD;
