@@ -490,7 +490,7 @@ const GPATracker = () => {
     },
     layout: {
       padding: isMobile
-        ? { top: 24, right: 8, bottom: 8, left: 8 }
+        ? { top: 12, right: 8, bottom: 8, left: 8 }
         : { top: 16, right: 8, bottom: 8, left: 8 }
     }
   };
