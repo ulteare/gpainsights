@@ -38,6 +38,7 @@ const GPATracker = () => {
   const [showTooltip, setShowTooltip] = useState(false);
   const [showTermGpa, setShowTermGpa] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [gradeModalData, setGradeModalData] = useState(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -466,9 +467,39 @@ const GPATracker = () => {
     ]
   };
 
+  const handleBarClick = (event, elements) => {
+    if (elements.length > 0) {
+      const index = elements[0].index;
+      const clickedGrade = displayGrades[index];
+
+      // Get all courses with this grade
+      const coursesWithGrade = allCourses
+        .filter(course => course.grade === clickedGrade)
+        .map(course => {
+          // Find the semester this course belongs to
+          const semester = data.find(sem =>
+            sem.courses && sem.courses.some(c => c === course)
+          );
+          return {
+            ...course,
+            semester_label: semester?.label || '-'
+          };
+        });
+
+      setGradeModalData({
+        grade: clickedGrade,
+        courses: coursesWithGrade
+      });
+    }
+  };
+
   const gradeDistributionOptions = {
     responsive: true,
     maintainAspectRatio: false,
+    onClick: handleBarClick,
+    onHover: (event, chartElement) => {
+      event.native.target.style.cursor = chartElement.length > 0 ? 'pointer' : 'default';
+    },
     plugins: {
       legend: { display: false },
       tooltip: {
@@ -666,6 +697,9 @@ const GPATracker = () => {
           <h2>Grade Distribution</h2>
           <p>Frequency of grades across all courses</p>
         </div>
+        <div className={styles.gradeDistCallout}>
+          💡 Click on any bar to view courses with that grade
+        </div>
         <div className={styles.contentLayout}>
           <div className={styles.chartSection}>
             <div className={styles.gradeDistChartWrap}>
@@ -697,6 +731,28 @@ const GPATracker = () => {
       </div>
 
       <div style={{ height: '8rem' }}></div>
+
+      {gradeModalData && (
+        <div className={styles.overlay} onClick={() => setGradeModalData(null)}>
+          <div className={styles.gradeModal} onClick={(e) => e.stopPropagation()}>
+            <button onClick={() => setGradeModalData(null)} className={styles.closeButton}>✕</button>
+            <div className={styles.gradeModalHeader}>
+              <h2>Grade {gradeModalData.grade}</h2>
+              <p>{gradeModalData.courses.length} {gradeModalData.courses.length === 1 ? 'course' : 'courses'}</p>
+            </div>
+            <div className={styles.gradeModalContent}>
+              {gradeModalData.courses.map((course, idx) => (
+                <div key={idx} className={styles.courseItem}>
+                  <div className={styles.courseInfo}>
+                    <div className={styles.courseName}>{course.name}</div>
+                    <div className={styles.courseSemester}>{course.semester_label}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {showUpload && (
         <div className={styles.overlay} onClick={() => setShowUpload(false)}>

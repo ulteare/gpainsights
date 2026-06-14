@@ -28,6 +28,7 @@ export const useSemesters = () => {
         .select(`
           *,
           courses (
+            name,
             grade,
             grade_points,
             units_earned,
