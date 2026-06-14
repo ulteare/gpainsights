@@ -1,11 +1,12 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Line } from 'react-chartjs-2';
+import { Line, Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
   PointElement,
   LineElement,
+  BarElement,
   Title,
   Tooltip,
   Legend,
@@ -22,6 +23,7 @@ ChartJS.register(
   LinearScale,
   PointElement,
   LineElement,
+  BarElement,
   Title,
   Tooltip,
   Legend
@@ -191,6 +193,33 @@ const GPATracker = () => {
   const startYear = parseInt(data[0].sem.split('.')[0]);
   const endYear = parseInt(data[data.length - 1].sem.split('.')[0]);
   const yearSpan = endYear - startYear + 1;
+
+  // Calculate grade distribution
+  const gradeOrder = isSMU
+    ? ['F', 'D', 'D+', 'C-', 'C', 'C+', 'B-', 'B', 'B+', 'A-', 'A', 'A+']
+    : ['F', 'D', 'D+', 'C-', 'C', 'C+', 'B-', 'B', 'B+', 'A-', 'A', 'A+', 'S'];
+
+  // Get all courses with letter grades from all semesters
+  const allCourses = data.flatMap(sem => sem.courses || []);
+  const gradedCourses = allCourses.filter(course =>
+    course.grade && gradeOrder.includes(course.grade)
+  );
+
+  // Count frequency of each grade
+  const gradeCounts = {};
+  gradeOrder.forEach(grade => gradeCounts[grade] = 0);
+  gradedCourses.forEach(course => {
+    if (gradeCounts[course.grade] !== undefined) {
+      gradeCounts[course.grade]++;
+    }
+  });
+
+  // Find lowest grade and determine x-axis bounds (±2 grades, max at A+)
+  const lowestGradeIndex = gradeOrder.findIndex(grade => gradeCounts[grade] > 0);
+  const startIndex = Math.max(0, lowestGradeIndex - 2);
+  const endIndex = gradeOrder.indexOf('A+');
+  const displayGrades = gradeOrder.slice(startIndex, endIndex + 1);
+  const displayCounts = displayGrades.map(grade => gradeCounts[grade]);
 
   // Define grade bands based on school
   const bands = isSMU ? [
@@ -414,6 +443,88 @@ const GPATracker = () => {
     }
   };
 
+  // Grade Distribution Chart Data
+  const maxCount = Math.max(...displayCounts);
+
+  const gradeDistributionData = {
+    labels: displayGrades,
+    datasets: [
+      {
+        type: 'bar',
+        label: 'Number of Courses',
+        data: displayCounts,
+        backgroundColor: '#6B4E2A',
+        borderColor: '#6B4E2A',
+        borderWidth: 0,
+      }
+    ]
+  };
+
+  const gradeDistributionOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        enabled: true,
+        backgroundColor: '#FAF8F5',
+        titleColor: '#2C2417',
+        bodyColor: '#2C2417',
+        borderColor: '#E0D6C8',
+        borderWidth: 1,
+        padding: 12,
+        displayColors: false,
+        callbacks: {
+          title: (items) => `Grade: ${items[0].label}`,
+          label: (item) => `Courses: ${item.raw}`
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { color: 'rgba(200,170,136,0.15)', drawTicks: false },
+        border: { color: '#E0D6C8', width: 1 },
+        ticks: {
+          color: '#8C7B68',
+          font: { family: "'Jost', sans-serif", size: isMobile ? 10 : 12 },
+          padding: 8
+        },
+        title: {
+          display: true,
+          text: 'Grade',
+          color: '#8C7B68',
+          font: { family: "'Jost', sans-serif", size: isMobile ? 11 : 12, weight: 400 },
+          padding: { top: 8 }
+        }
+      },
+      y: {
+        beginAtZero: true,
+        max: maxCount + 1,
+        grid: { color: 'rgba(200,170,136,0.18)', drawTicks: false },
+        border: { color: '#E0D6C8', width: 1 },
+        ticks: {
+          color: '#8C7B68',
+          font: { family: "'Jost', sans-serif", size: isMobile ? 10 : 12 },
+          padding: 10,
+          stepSize: 1,
+          callback: v => Math.floor(v) === v ? v : ''
+        },
+        title: {
+          display: !isMobile,
+          text: 'Number of Courses',
+          color: '#8C7B68',
+          font: { family: "'Jost', sans-serif", size: 12, weight: 400 },
+          padding: { bottom: 8 }
+        }
+      }
+    },
+    layout: {
+      padding: isMobile
+        ? { top: 16, right: 8, bottom: 8, left: 8 }
+        : { top: 16, right: 8, bottom: 8, left: 8 }
+    }
+  };
+
   return (
     <>
       <h2 className={styles.srOnly}>Cumulative GPA over semesters with grade band highlights.</h2>
@@ -522,6 +633,21 @@ const GPATracker = () => {
             </div>
             <div className={styles.sub}>Over {yearSpan} {yearSpan === 1 ? 'year' : 'years'}</div>
           </div>
+        </div>
+      </div>
+
+      {/* Grade Distribution Section */}
+      <div className={styles.gradeDistSection}>
+        <div className={styles.gradeDistHeader}>
+          <h2>Grade Distribution</h2>
+          <p>Frequency of grades across all courses</p>
+        </div>
+        <div className={styles.gradeDistChartWrap}>
+          <Bar
+            data={gradeDistributionData}
+            options={gradeDistributionOptions}
+            aria-label="Bar chart with line overlay showing the distribution of letter grades across all courses"
+          />
         </div>
       </div>
 
