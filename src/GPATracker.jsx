@@ -696,6 +696,8 @@ const GPATracker = () => {
         </div>
       </div>
 
+      <div style={{ height: '8rem' }}></div>
+
       {showUpload && (
         <div className={styles.overlay} onClick={() => setShowUpload(false)}>
           <div className={styles.uploadModal} onClick={(e) => e.stopPropagation()}>
