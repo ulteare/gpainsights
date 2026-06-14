@@ -15,7 +15,19 @@ const NON_GRADED = new Set(['P', 'IP', 'I', 'W', '-', '']);
 
 // Extract text from PDF
 async function extractTextFromPDF(file) {
-  const arrayBuffer = await file.arrayBuffer();
+  // Safari compatibility: use FileReader if arrayBuffer() is not available
+  let arrayBuffer;
+  if (file.arrayBuffer) {
+    arrayBuffer = await file.arrayBuffer();
+  } else {
+    // Fallback for older browsers (Safari)
+    arrayBuffer = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsArrayBuffer(file);
+    });
+  }
   const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
 
   let fullText = '';
