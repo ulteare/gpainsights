@@ -50,7 +50,7 @@ const Login = () => {
 
       <div className={styles.content}>
         <div className={styles.hero}>
-          <h1 className={styles.title}>All you need<br />is your transcript.</h1>
+          <h1 className={styles.title}>Visualise<br />your transcript.</h1>
         </div>
 
         <div className={styles.valueProps}>
