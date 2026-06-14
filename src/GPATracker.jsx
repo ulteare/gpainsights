@@ -43,6 +43,13 @@ const GPATracker = () => {
   const [semesterModalData, setSemesterModalData] = useState(null);
   const [showGpaChartCallout, setShowGpaChartCallout] = useState(true);
 
+  // Check if browser is Chrome
+  const isChrome = () => {
+    const ua = navigator.userAgent;
+    return ua.includes('Chrome') && !ua.includes('Edg') && !ua.includes('Arc');
+  };
+  const showBrowserWarning = !isChrome();
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
@@ -82,6 +89,11 @@ const GPATracker = () => {
   if (!data || data.length === 0) {
     return (
       <>
+        {showBrowserWarning && (
+          <div className={styles.browserWarning}>
+            ⚠️ For the best experience uploading transcripts, please use Google Chrome
+          </div>
+        )}
         <div className={styles.emptyState}>
           <h2 className={styles.emptyTitle}>Get insights in one step</h2>
           <button

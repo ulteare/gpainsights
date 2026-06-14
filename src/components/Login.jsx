@@ -7,6 +7,13 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // Check if browser is Chrome
+  const isChrome = () => {
+    const ua = navigator.userAgent;
+    return ua.includes('Chrome') && !ua.includes('Edg') && !ua.includes('Arc');
+  };
+  const showBrowserWarning = !isChrome();
+
   const handleGoogleLogin = async () => {
     try {
       setLoading(true);
@@ -20,6 +27,11 @@ const Login = () => {
 
   return (
     <div className={styles.container}>
+      {showBrowserWarning && (
+        <div className={styles.browserWarning}>
+          ⚠️ For the best experience uploading transcripts, please use Google Chrome
+        </div>
+      )}
       <button
         onClick={handleGoogleLogin}
         disabled={loading}

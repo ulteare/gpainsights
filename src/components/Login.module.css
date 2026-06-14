@@ -121,6 +121,21 @@
   margin-top: 0.75rem;
 }
 
+.browserWarning {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #FEF3C7;
+  border-bottom: 1px solid #FCD34D;
+  padding: 12px 20px;
+  text-align: center;
+  font-family: 'Jost', sans-serif;
+  font-size: 14px;
+  color: #92400E;
+  z-index: 200;
+}
+
 .loginButton {
   position: fixed;
   bottom: 2rem;
