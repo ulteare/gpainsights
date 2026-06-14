@@ -449,6 +449,7 @@ const GPATracker = () => {
   // Calculate grade distribution stats
   const totalCreditBearingCourses = gradedCourses.length;
   const highestFreqGrade = displayGrades[displayCounts.indexOf(maxCount)] || '-';
+  const highestFreqPercentage = totalCreditBearingCourses > 0 ? ((maxCount / totalCreditBearingCourses) * 100).toFixed(1) : '0.0';
   const uniqueGradesCount = Object.values(gradeCounts).filter(count => count > 0).length;
 
   const gradeDistributionData = {
@@ -471,17 +472,35 @@ const GPATracker = () => {
     plugins: {
       legend: { display: false },
       tooltip: {
-        enabled: true,
-        backgroundColor: '#FAF8F5',
-        titleColor: '#2C2417',
-        bodyColor: '#2C2417',
-        borderColor: '#E0D6C8',
-        borderWidth: 1,
-        padding: 12,
-        displayColors: false,
-        callbacks: {
-          title: (items) => `Grade: ${items[0].label}`,
-          label: (item) => `Courses: ${item.raw}`
+        enabled: false,
+        external: isMobile ? undefined : function(context) {
+          let el = document.getElementById('grade-dist-tooltip');
+          if (!el) {
+            el = document.createElement('div');
+            el.id = 'grade-dist-tooltip';
+            el.className = styles.tooltipBox;
+            el.style.display = 'none';
+            document.querySelector(`.${styles.gradeDistChartWrap}`).appendChild(el);
+          }
+          const model = context.tooltip;
+          if (model.opacity === 0) {
+            el.style.display = 'none';
+            return;
+          }
+          const idx = model.dataPoints[0].dataIndex;
+          const grade = displayGrades[idx];
+          const count = displayCounts[idx];
+          const percentage = totalCreditBearingCourses > 0 ? ((count / totalCreditBearingCourses) * 100).toFixed(1) : '0.0';
+
+          el.innerHTML = `
+            <div class="${styles.tooltipSem}">Grade ${grade}</div>
+            <div class="${styles.tooltipGpa}">${count} ${count === 1 ? 'course' : 'courses'}</div>
+            <div class="${styles.tooltipTermGpa}">${percentage}% of total</div>
+          `;
+          el.style.display = 'block';
+          const canvasEl = context.chart.canvas;
+          el.style.left = (canvasEl.offsetLeft + model.caretX - el.offsetWidth / 2) + 'px';
+          el.style.top = (canvasEl.offsetTop + model.caretY - el.offsetHeight - 14) + 'px';
         }
       }
     },
@@ -661,7 +680,7 @@ const GPATracker = () => {
             <div className={styles.statCard}>
               <div className={styles.label}>Highest Frequency</div>
               <div className={styles.value}>{highestFreqGrade}</div>
-              <div className={styles.sub}>{maxCount} {maxCount === 1 ? 'course' : 'courses'}</div>
+              <div className={styles.sub}>{maxCount} {maxCount === 1 ? 'course' : 'courses'} · {highestFreqPercentage}%</div>
             </div>
             <div className={styles.statCard}>
               <div className={styles.label}>Total Courses</div>
