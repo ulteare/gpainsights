@@ -450,7 +450,10 @@ const GPATracker = () => {
 
   // Calculate grade distribution stats
   const totalCreditBearingCourses = gradedCourses.length;
-  const highestFreqGrade = displayGrades[displayCounts.indexOf(maxCount)] || '-';
+
+  // Find all grades with the highest frequency (reverse to show highest grade first)
+  const highestFreqGrades = gradeOrder.filter(grade => gradeCounts[grade] === maxCount).reverse();
+  const highestFreqGradeDisplay = highestFreqGrades.join(', ');
   const highestFreqPercentage = totalCreditBearingCourses > 0 ? ((maxCount / totalCreditBearingCourses) * 100).toFixed(1) : '0.0';
   const uniqueGradesCount = Object.values(gradeCounts).filter(count => count > 0).length;
 
@@ -723,8 +726,8 @@ const GPATracker = () => {
           <div className={styles.statsColumn}>
             <div className={styles.statCard}>
               <div className={styles.label}>Highest Frequency</div>
-              <div className={styles.value}>{highestFreqGrade}</div>
-              <div className={styles.sub}>{maxCount} {maxCount === 1 ? 'course' : 'courses'} · {highestFreqPercentage}%</div>
+              <div className={styles.value}>{highestFreqGradeDisplay}</div>
+              <div className={styles.sub}>{maxCount} {maxCount === 1 ? 'course' : 'courses'} · {highestFreqPercentage}%{highestFreqGrades.length > 1 ? ' each' : ''}</div>
             </div>
             <div className={styles.statCard}>
               <div className={styles.label}>Total Courses</div>
