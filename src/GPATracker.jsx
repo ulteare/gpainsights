@@ -244,6 +244,8 @@ const GPATracker = () => {
     id: 'bandPlugin',
     beforeDatasetsDraw(chart) {
       const { ctx, chartArea: { left, right }, scales: { y } } = chart;
+
+      // Draw grade bands
       bands.forEach(band => {
         const bMin = Math.max(band.min, yMin);
         const bMax = Math.min(band.max, yMax);
@@ -255,6 +257,20 @@ const GPATracker = () => {
         ctx.fillRect(left, yTop, right - left, yBottom - yTop);
         ctx.restore();
       });
+
+      // Draw 4.0 ceiling line for SMU if there are grades above 4.0
+      if (isSMU && yMax > 4.0) {
+        const y4_0 = y.getPixelForValue(4.0);
+        ctx.save();
+        ctx.strokeStyle = '#b6d4f8'; // Light blue
+        ctx.lineWidth = 2;
+        ctx.setLineDash([5, 5]); // Dotted line
+        ctx.beginPath();
+        ctx.moveTo(left, y4_0);
+        ctx.lineTo(right, y4_0);
+        ctx.stroke();
+        ctx.restore();
+      }
     },
     afterDatasetsDraw(chart) {
       const { ctx, chartArea: { left, right }, scales: { y } } = chart;
