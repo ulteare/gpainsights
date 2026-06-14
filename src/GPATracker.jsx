@@ -39,6 +39,7 @@ const GPATracker = () => {
   const [showTermGpa, setShowTermGpa] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [gradeModalData, setGradeModalData] = useState(null);
+  const [showGradeDistCallout, setShowGradeDistCallout] = useState(true);
 
   useEffect(() => {
     const handleResize = () => {
@@ -697,9 +698,18 @@ const GPATracker = () => {
           <h2>Grade Distribution</h2>
           <p>Frequency of grades across all courses</p>
         </div>
-        <div className={styles.gradeDistCallout}>
-          💡 Click on any bar to view courses with that grade
-        </div>
+        {showGradeDistCallout && (
+          <div className={styles.gradeDistCallout}>
+            <span>💡 Click on any bar to view courses with that grade</span>
+            <button
+              onClick={() => setShowGradeDistCallout(false)}
+              className={styles.calloutCloseButton}
+              aria-label="Dismiss"
+            >
+              ✕
+            </button>
+          </div>
+        )}
         <div className={styles.contentLayout}>
           <div className={styles.chartSection}>
             <div className={styles.gradeDistChartWrap}>
