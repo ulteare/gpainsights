@@ -446,6 +446,11 @@ const GPATracker = () => {
   // Grade Distribution Chart Data
   const maxCount = Math.max(...displayCounts);
 
+  // Calculate grade distribution stats
+  const totalCreditBearingCourses = gradedCourses.length;
+  const highestFreqGrade = displayGrades[displayCounts.indexOf(maxCount)] || '-';
+  const uniqueGradesCount = Object.values(gradeCounts).filter(count => count > 0).length;
+
   const gradeDistributionData = {
     labels: displayGrades,
     datasets: [
@@ -642,12 +647,33 @@ const GPATracker = () => {
           <h2>Grade Distribution</h2>
           <p>Frequency of grades across all courses</p>
         </div>
-        <div className={styles.gradeDistChartWrap}>
-          <Bar
-            data={gradeDistributionData}
-            options={gradeDistributionOptions}
-            aria-label="Bar chart with line overlay showing the distribution of letter grades across all courses"
-          />
+        <div className={styles.contentLayout}>
+          <div className={styles.chartSection}>
+            <div className={styles.gradeDistChartWrap}>
+              <Bar
+                data={gradeDistributionData}
+                options={gradeDistributionOptions}
+                aria-label="Bar chart showing the distribution of letter grades across all courses"
+              />
+            </div>
+          </div>
+          <div className={styles.statsColumn}>
+            <div className={styles.statCard}>
+              <div className={styles.label}>Highest Frequency</div>
+              <div className={styles.value}>{highestFreqGrade}</div>
+              <div className={styles.sub}>{maxCount} {maxCount === 1 ? 'course' : 'courses'}</div>
+            </div>
+            <div className={styles.statCard}>
+              <div className={styles.label}>Total Courses</div>
+              <div className={styles.value}>{totalCreditBearingCourses}</div>
+              <div className={styles.sub}>Credit bearing</div>
+            </div>
+            <div className={styles.statCard}>
+              <div className={styles.label}>Grade Diversity</div>
+              <div className={styles.value}>{uniqueGradesCount}</div>
+              <div className={styles.sub}>Unique grades</div>
+            </div>
+          </div>
         </div>
       </div>
 
