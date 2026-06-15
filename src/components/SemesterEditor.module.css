@@ -34,11 +34,51 @@
   margin-bottom: 16px;
 }
 
+.semestersHeader {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.semestersHeader h4 {
+  flex: 1;
+}
+
 .semestersPreview h4 {
   font-size: 16px;
   font-weight: 600;
   color: #2C2416;
-  margin-bottom: 16px;
+  margin: 0;
+}
+
+.exportButton {
+  font-family: 'Jost', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: transparent;
+  color: #8C6E4B;
+  border: 1px solid #E0D6C8;
+}
+
+.exportButton:hover:not(:disabled) {
+  background: #F0E6D6;
+  border-color: #8C6E4B;
+}
+
+.exportButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .exportButton {
+    display: none;
+  }
 }
 
 .semesterPreviewItem {

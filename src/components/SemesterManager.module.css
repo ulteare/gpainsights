@@ -55,6 +55,13 @@
   padding: 0;
 }
 
+.headerRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
 .description {
   list-style: none;
   padding: 0;
@@ -62,6 +69,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  flex: 1;
 }
 
 .description li {
@@ -79,6 +87,31 @@
   position: absolute;
   left: 0;
   color: #8C6E4B;
+}
+
+.exportButton {
+  font-family: 'Jost', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: transparent;
+  color: #8C6E4B;
+  border: 1px solid #E0D6C8;
+  white-space: nowrap;
+  align-self: flex-start;
+}
+
+.exportButton:hover:not(:disabled) {
+  background: #F0E6D6;
+  border-color: #8C6E4B;
+}
+
+.exportButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .pageContent {
@@ -111,6 +144,10 @@
 
   .description li {
     font-size: 13px;
+  }
+
+  .exportButton {
+    display: none;
   }
 
   .pageContent {

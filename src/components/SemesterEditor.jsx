@@ -10,6 +10,7 @@ export const SemesterEditor = ({
   onDataChange,
   onAddSemester,
   onDeleteSemester,
+  onExportCSV,
   showStats = true,
   showTitle = true,
   fullWidthMobile = false
@@ -183,7 +184,20 @@ export const SemesterEditor = ({
       )}
 
       <div className={styles.semestersPreview}>
-        {showTitle && <h4>Semesters</h4>}
+        {(showTitle || onExportCSV) && (
+          <div className={styles.semestersHeader}>
+            {showTitle && <h4>Semesters</h4>}
+            {onExportCSV && (
+              <button
+                onClick={onExportCSV}
+                className={styles.exportButton}
+                disabled={semestersData.length === 0}
+              >
+                Export to CSV
+              </button>
+            )}
+          </div>
+        )}
         {semestersData.map((semester, index) => (
           <div
             key={index}

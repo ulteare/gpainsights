@@ -224,6 +224,62 @@ const SemesterManager = ({ semesters, onClose, onUpdate, inline = false, onUnsav
     }
   };
 
+  const handleExportCSV = () => {
+    // Create CSV header
+    const headers = ['Semester', 'Semester Code', 'Course Name', 'Grade', 'Units/Credits', 'Grade Points', 'Note'];
+
+    // Create CSV rows
+    const rows = [];
+    semestersData.forEach(semester => {
+      const semesterLabel = semester.semester_label || semester.label;
+      const semesterCode = semester.semester_code || semester.sem;
+      const note = semester.note || '';
+
+      if (semester.courses && semester.courses.length > 0) {
+        semester.courses.forEach(course => {
+          rows.push([
+            semesterLabel,
+            semesterCode,
+            course.name || '',
+            course.grade || '',
+            course.units_earned || '',
+            course.grade_points !== null && course.grade_points !== undefined ? course.grade_points : '',
+            note
+          ]);
+        });
+      } else {
+        // If semester has no courses, still add a row with semester info
+        rows.push([semesterLabel, semesterCode, '', '', '', '', note]);
+      }
+    });
+
+    // Convert to CSV string
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.map(cell => {
+        // Escape commas and quotes in cell content
+        const cellStr = String(cell);
+        if (cellStr.includes(',') || cellStr.includes('"') || cellStr.includes('\n')) {
+          return `"${cellStr.replace(/"/g, '""')}"`;
+        }
+        return cellStr;
+      }).join(','))
+    ].join('\n');
+
+    // Create and trigger download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+
+    link.setAttribute('href', url);
+    link.setAttribute('download', `gpa-insights-${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className={inline ? styles.inlineContainer : styles.pageContainer}>
       {!inline && (
@@ -234,11 +290,20 @@ const SemesterManager = ({ semesters, onClose, onUpdate, inline = false, onUnsav
 
       <div className={inline ? styles.inlineHeader : styles.pageHeader}>
         {!inline && <h1>Your Grades</h1>}
-        <ul className={styles.description}>
-          <li>Edit existing grades and semesters</li>
-          <li>Add new semesters</li>
-          <li>Predict your GPA — cumulative GPA auto-calculates as you make changes</li>
-        </ul>
+        <div className={styles.headerRow}>
+          <ul className={styles.description}>
+            <li>Edit existing grades and semesters</li>
+            <li>Add new semesters</li>
+            <li>Predict your GPA — cumulative GPA auto-calculates as you make changes</li>
+          </ul>
+          <button
+            onClick={handleExportCSV}
+            className={styles.exportButton}
+            disabled={loading || semestersData.length === 0}
+          >
+            Export to CSV
+          </button>
+        </div>
       </div>
 
       <div className={styles.pageContent}>
