@@ -54,22 +54,23 @@
 }
 
 .settingsButton {
-  background: transparent;
-  border: 1px solid #E0D6C8;
+  background: #F5EFE6;
+  border: 1px solid #C4B5A0;
   border-radius: 4px;
-  padding: 0.5rem;
+  padding: 0.625rem 1rem;
   cursor: pointer;
-  color: #8C7B68;
+  color: #5F3A12;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
+  font-weight: 500;
 }
 
 .settingsButton:hover {
-  background: #F0E6D6;
-  border-color: #8C6E4B;
-  color: #6B4E2A;
+  background: #EDE5D8;
+  border-color: #A89178;
+  color: #4A2D0E;
 }
 
 .uploadButtonWrapper {

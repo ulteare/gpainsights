@@ -648,7 +648,7 @@ const GPATracker = () => {
               onClick={() => setShowManager(true)}
               className={styles.settingsButton}
             >
-              View / Edit / Predict Grades
+              Your Grades
             </button>
             <div className={styles.uploadButtonWrapper}>
               <button

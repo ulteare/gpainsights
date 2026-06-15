@@ -225,7 +225,7 @@ const SemesterManager = ({ semesters, onClose, onUpdate }) => {
       </button>
 
       <div className={styles.pageHeader}>
-        <h1>Your Semesters</h1>
+        <h1>Your Grades</h1>
         <ul className={styles.description}>
           <li>Edit existing grades and semesters</li>
           <li>Add new semesters</li>
