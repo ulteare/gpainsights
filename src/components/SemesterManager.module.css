@@ -4,6 +4,16 @@
   padding-top: 2rem;
 }
 
+.inlineContainer {
+  background: transparent;
+  padding: 0;
+}
+
+.inlineContainer .pageContent {
+  padding: 0;
+  max-width: none;
+}
+
 .backButton {
   background: transparent;
   border: 1px solid #E0D6C8;
@@ -40,6 +50,11 @@
   margin: 0 0 0.75rem 0;
 }
 
+.inlineHeader {
+  margin: 0 0 1.5rem;
+  padding: 0;
+}
+
 .description {
   list-style: none;
   padding: 0;
@@ -68,6 +83,8 @@
 
 .pageContent {
   width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 0 2rem 2rem;
 }
 

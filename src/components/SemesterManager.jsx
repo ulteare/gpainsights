@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { SemesterEditor } from './SemesterEditor';
 import styles from './SemesterManager.module.css';
 
-const SemesterManager = ({ semesters, onClose, onUpdate }) => {
+const SemesterManager = ({ semesters, onClose, onUpdate, inline = false, onUnsavedChanges }) => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -72,6 +72,9 @@ const SemesterManager = ({ semesters, onClose, onUpdate }) => {
   const handleDataChange = (updatedSemesters) => {
     setSemestersData(updatedSemesters);
     setHasUnsavedChanges(true);
+    if (onUnsavedChanges) {
+      onUnsavedChanges(true);
+    }
   };
 
   const handleAddSemester = () => {
@@ -208,8 +211,11 @@ const SemesterManager = ({ semesters, onClose, onUpdate }) => {
       }
 
       setHasUnsavedChanges(false);
+      if (onUnsavedChanges) {
+        onUnsavedChanges(false);
+      }
       onUpdate(); // Refresh parent data
-      onClose();
+      if (onClose) onClose();
     } catch (err) {
       console.error('Error saving changes:', err);
       setError(err.message);
@@ -219,13 +225,15 @@ const SemesterManager = ({ semesters, onClose, onUpdate }) => {
   };
 
   return (
-    <div className={styles.pageContainer}>
-      <button onClick={handleClose} className={styles.backButton} title="Back to main page">
-        ← Back
-      </button>
+    <div className={inline ? styles.inlineContainer : styles.pageContainer}>
+      {!inline && (
+        <button onClick={handleClose} className={styles.backButton} title="Back to main page">
+          ← Back
+        </button>
+      )}
 
-      <div className={styles.pageHeader}>
-        <h1>Your Grades</h1>
+      <div className={inline ? styles.inlineHeader : styles.pageHeader}>
+        {!inline && <h1>Your Grades</h1>}
         <ul className={styles.description}>
           <li>Edit existing grades and semesters</li>
           <li>Add new semesters</li>

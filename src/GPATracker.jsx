@@ -33,7 +33,7 @@ const GPATracker = () => {
   const chartRef = useRef(null);
   const { semesters: data, loading, error, refetch } = useSemesters();
   const { settings } = useUserSettings();
-  const [showManager, setShowManager] = useState(false);
+  const [viewMode, setViewMode] = useState('visualization'); // 'visualization' or 'table'
   const [showUpload, setShowUpload] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
   const [showTermGpa, setShowTermGpa] = useState(false);
@@ -43,6 +43,9 @@ const GPATracker = () => {
   const [semesterModalData, setSemesterModalData] = useState(null);
   const [showGpaChartCallout, setShowGpaChartCallout] = useState(true);
   const [showBrowserWarning, setShowBrowserWarning] = useState(true);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [showViewSwitchConfirm, setShowViewSwitchConfirm] = useState(false);
+  const [pendingViewMode, setPendingViewMode] = useState(null);
 
   // Check if browser is Chrome
   const isChrome = () => {
@@ -58,17 +61,6 @@ const GPATracker = () => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-
-  // Show SemesterManager as standalone page
-  if (showManager) {
-    return (
-      <SemesterManager
-        semesters={data || []}
-        onClose={() => setShowManager(false)}
-        onUpdate={refetch}
-      />
-    );
-  }
 
   // If loading or error, show appropriate state
   if (loading) {
@@ -385,6 +377,22 @@ const GPATracker = () => {
     ]
   };
 
+  const handleViewModeChange = (newMode) => {
+    if (hasUnsavedChanges && viewMode === 'table') {
+      setPendingViewMode(newMode);
+      setShowViewSwitchConfirm(true);
+    } else {
+      setViewMode(newMode);
+    }
+  };
+
+  const confirmViewSwitch = () => {
+    setViewMode(pendingViewMode);
+    setShowViewSwitchConfirm(false);
+    setPendingViewMode(null);
+    setHasUnsavedChanges(false);
+  };
+
   const handleGpaChartClick = (event, elements) => {
     if (elements.length > 0) {
       const index = elements[0].index;
@@ -640,16 +648,26 @@ const GPATracker = () => {
       <div className={styles.header}>
         <div className={styles.headerLeft}>
           <h1>Academic Progress</h1>
-          <p>Cumulative GPA · All Semesters</p>
+          <p>
+            {viewMode === 'visualization' ? 'Cumulative GPA · All Semesters' : 'Your Grades · All Semesters'}
+          </p>
         </div>
         <div className={styles.headerRight}>
           <div className={styles.buttonGroup}>
-            <button
-              onClick={() => setShowManager(true)}
-              className={styles.settingsButton}
-            >
-              Your Grades
-            </button>
+            <div className={styles.viewToggle}>
+              <button
+                onClick={() => handleViewModeChange('visualization')}
+                className={`${styles.toggleButton} ${viewMode === 'visualization' ? styles.toggleButtonActive : ''}`}
+              >
+                Visualization
+              </button>
+              <button
+                onClick={() => handleViewModeChange('table')}
+                className={`${styles.toggleButton} ${viewMode === 'table' ? styles.toggleButtonActive : ''}`}
+              >
+                Your Grades
+              </button>
+            </div>
             <div className={styles.uploadButtonWrapper}>
               <button
                 onClick={() => setShowUpload(true)}
@@ -676,19 +694,22 @@ const GPATracker = () => {
           </span>
         </div>
       </div>
-      {showGpaChartCallout && (
-        <div className={styles.gpaChartCallout}>
-          <span>💡 Click on any point to view semester details</span>
-          <button
-            onClick={() => setShowGpaChartCallout(false)}
-            className={styles.calloutCloseButton}
-            aria-label="Dismiss"
-          >
-            ✕
-          </button>
-        </div>
-      )}
-      <div className={styles.contentLayout}>
+
+      {viewMode === 'visualization' ? (
+        <>
+          {showGpaChartCallout && (
+            <div className={styles.gpaChartCallout}>
+              <span>💡 Click on any point to view semester details</span>
+              <button
+                onClick={() => setShowGpaChartCallout(false)}
+                className={styles.calloutCloseButton}
+                aria-label="Dismiss"
+              >
+                ✕
+              </button>
+            </div>
+          )}
+          <div className={styles.contentLayout}>
         <div className={styles.chartSection}>
           <div className={styles.chartCanvasWrap}>
             <Line
@@ -805,7 +826,42 @@ const GPATracker = () => {
         </div>
       </div>
 
-      <div style={{ height: '8rem' }}></div>
+          <div style={{ height: '8rem' }}></div>
+        </>
+      ) : (
+        <div className={styles.tableViewContainer}>
+          <SemesterManager
+            semesters={data || []}
+            onClose={null}
+            onUpdate={refetch}
+            inline={true}
+            onUnsavedChanges={setHasUnsavedChanges}
+          />
+        </div>
+      )}
+
+      {showViewSwitchConfirm && (
+        <div className={styles.overlay} onClick={() => setShowViewSwitchConfirm(false)}>
+          <div className={styles.confirmDialog} onClick={(e) => e.stopPropagation()}>
+            <h3>Unsaved Changes</h3>
+            <p>You have unsaved changes. Are you sure you want to leave without saving?</p>
+            <div className={styles.confirmActions}>
+              <button
+                onClick={() => setShowViewSwitchConfirm(false)}
+                className={styles.continueEditingButton}
+              >
+                Continue Editing
+              </button>
+              <button
+                onClick={confirmViewSwitch}
+                className={styles.leaveButton}
+              >
+                Leave without Saving
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {semesterModalData && (
         <div className={styles.overlay} onClick={() => setSemesterModalData(null)}>
