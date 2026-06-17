@@ -129,15 +129,28 @@ function parseTermTotal(line) {
   return match ? parseFloat(match[1]) : null;
 }
 
-// Calculate semester label
-function semesterLabel(enrolmentYear, academicYearStr, termNum) {
-  const startYear = parseInt(academicYearStr.split('-')[0]);
-  const yearNum = startYear - enrolmentYear + 1;
+// Calculate semester label based on academic year
+function calculateSemesterLabels(semesters) {
+  // Group semesters by academic year
+  const yearMap = new Map();
 
-  const termMatch = termNum.match(/(\d+)/);
-  const termInt = termMatch ? parseInt(termMatch[1]) : 0;
+  for (const sem of semesters) {
+    if (!yearMap.has(sem.academic_year)) {
+      yearMap.set(sem.academic_year, []);
+    }
+    yearMap.get(sem.academic_year).push(sem);
+  }
 
-  return `${yearNum}.${termInt}`;
+  // Assign year numbers sequentially
+  let yearNum = 1;
+  for (const [academicYear, sems] of yearMap) {
+    for (const sem of sems) {
+      const termMatch = sem.term.match(/(\d+)/);
+      const termInt = termMatch ? parseInt(termMatch[1]) : 0;
+      sem.label = `${yearNum}.${termInt}`;
+    }
+    yearNum++;
+  }
 }
 
 // Parse cumulative stats
@@ -223,10 +236,8 @@ export async function parseTranscript(file) {
           semesters.push(currentTerm);
         }
 
-        const label = semesterLabel(enrolYear, termMatch.academicYear, termMatch.term);
-
         currentTerm = {
-          label,
+          label: null, // Will be calculated later
           academic_year: termMatch.academicYear,
           term: termMatch.term,
           type: 'regular',
@@ -285,6 +296,9 @@ export async function parseTranscript(file) {
     if (currentTerm) {
       semesters.push(currentTerm);
     }
+
+    // Calculate semester labels based on academic year grouping
+    calculateSemesterLabels(semesters);
 
     // Determine chart inclusion
     for (const sem of semesters) {
