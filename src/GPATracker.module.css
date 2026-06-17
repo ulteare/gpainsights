@@ -136,6 +136,24 @@
   background: #4A2D0E;
 }
 
+.jsonUploadButton {
+  background: transparent;
+  border: 1px solid #E0D6C8;
+  border-radius: 4px;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  color: #8C6E4B;
+  font-family: 'Jost', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.jsonUploadButton:hover {
+  background: #F0E6D6;
+  border-color: #8C6E4B;
+}
+
 .infoIconWrapper {
   position: relative;
   display: flex;

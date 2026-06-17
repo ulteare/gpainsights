@@ -5,6 +5,26 @@
   font-family: 'Jost', sans-serif;
 }
 
+.jsonTextarea {
+  width: 100%;
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 13px;
+  padding: 12px;
+  border: 1px solid #E0D6C8;
+  border-radius: 6px;
+  background: #FEFDFB;
+  color: #2C2417;
+  resize: vertical;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.jsonTextarea:focus {
+  outline: none;
+  border-color: #8C6E4B;
+  background: #FFFFFF;
+}
+
 .container h2 {
   font-size: 28px;
   font-weight: 500;

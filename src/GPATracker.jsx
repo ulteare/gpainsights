@@ -15,6 +15,7 @@ import { useSemesters } from './hooks/useSemesters';
 import { useUserSettings } from './hooks/useUserSettings';
 import SemesterManager from './components/SemesterManager';
 import { TranscriptUpload } from './TranscriptUpload';
+import { JsonUpload } from './JsonUpload';
 import styles from './GPATracker.module.css';
 
 // Register ChartJS components
@@ -35,6 +36,7 @@ const GPATracker = () => {
   const { settings } = useUserSettings();
   const [viewMode, setViewMode] = useState('visualization'); // 'visualization' or 'table'
   const [showUpload, setShowUpload] = useState(false);
+  const [showJsonUpload, setShowJsonUpload] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
   const [showTermGpa, setShowTermGpa] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -675,6 +677,15 @@ const GPATracker = () => {
               >
                 Upload Transcript
               </button>
+              {settings?.user_type === 'A' && (
+                <button
+                  onClick={() => setShowJsonUpload(true)}
+                  className={styles.jsonUploadButton}
+                  title="Admin: Upload JSON for troubleshooting"
+                >
+                  JSON
+                </button>
+              )}
               <div
                 className={styles.infoIconWrapper}
                 onMouseEnter={() => setShowTooltip(true)}
@@ -683,7 +694,7 @@ const GPATracker = () => {
                 <span className={styles.infoIcon}>ⓘ</span>
                 {showTooltip && (
                   <div className={styles.tooltip}>
-                    Uploading your academic transcript will override existing data. 
+                    Uploading your academic transcript will override existing data.
                   </div>
                 )}
               </div>
@@ -935,6 +946,21 @@ const GPATracker = () => {
                 refetch(); // Refresh chart data
               }}
               onCancel={() => setShowUpload(false)}
+            />
+          </div>
+        </div>
+      )}
+
+      {showJsonUpload && (
+        <div className={styles.overlay} onClick={() => setShowJsonUpload(false)}>
+          <div className={styles.uploadModal} onClick={(e) => e.stopPropagation()}>
+            <button onClick={() => setShowJsonUpload(false)} className={styles.closeButton}>✕</button>
+            <JsonUpload
+              onSuccess={() => {
+                setShowJsonUpload(false);
+                refetch(); // Refresh chart data
+              }}
+              onCancel={() => setShowJsonUpload(false)}
             />
           </div>
         </div>
