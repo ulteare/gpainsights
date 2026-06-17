@@ -38,6 +38,7 @@ export const useUserSettings = () => {
             user_id: user.id,
             school: 'SMU',
             grade_scale: 4.0,
+            user_type: 'N',
             full_name: user.user_metadata?.full_name || null,
             email: user.email || null,
           })
