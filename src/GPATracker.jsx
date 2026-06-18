@@ -49,6 +49,11 @@ const GPATracker = () => {
   const [showViewSwitchConfirm, setShowViewSwitchConfirm] = useState(false);
   const [pendingViewMode, setPendingViewMode] = useState(null);
 
+  // Helper function to round to 2 decimal places (conventional rounding, not banker's rounding)
+  const round2dp = (num) => {
+    return Math.round(num * 100) / 100;
+  };
+
   // Check if browser is Chrome
   const isChrome = () => {
     const ua = navigator.userAgent;
@@ -338,7 +343,7 @@ const GPATracker = () => {
         const isHighGrade = (isSMU && value >= 3.96) || (!isSMU && value >= 4.91);
         const labelOffset = isHighGrade ? 16 : -12;
 
-        ctx.fillText(value.toFixed(2), xPos, yPos + labelOffset);
+        ctx.fillText(round2dp(value).toFixed(2), xPos, yPos + labelOffset);
       });
 
       ctx.restore();
@@ -441,7 +446,7 @@ const GPATracker = () => {
             if (termGpa) {
               el.innerHTML = `
                 <div class="${styles.tooltipSem}">${d.label}</div>
-                <div class="${styles.tooltipGpa}">Term: ${termGpa.toFixed(2)}</div>
+                <div class="${styles.tooltipGpa}">Term: ${round2dp(termGpa).toFixed(2)}</div>
               `;
             }
           } else {
@@ -450,8 +455,8 @@ const GPATracker = () => {
             const band = bands.find(b => gpa >= b.min && gpa < b.max) || (gpa >= 3.9 ? bands[0] : null);
             el.innerHTML = `
               <div class="${styles.tooltipSem}">${d.label}${d.note ? ' · ' + d.note : ''}</div>
-              <div class="${styles.tooltipGpa}">${gpa.toFixed(2)}</div>
-              ${d.term_gpa ? `<div class="${styles.tooltipTermGpa}">Term: ${d.term_gpa.toFixed(2)}</div>` : ''}
+              <div class="${styles.tooltipGpa}">${round2dp(gpa).toFixed(2)}</div>
+              ${d.term_gpa ? `<div class="${styles.tooltipTermGpa}">Term: ${round2dp(d.term_gpa).toFixed(2)}</div>` : ''}
               ${band ? `<div class="${styles.tooltipBand}">${band.label}</div>` : ''}
             `;
           }
@@ -768,12 +773,12 @@ const GPATracker = () => {
         <div className={styles.statsColumn}>
           <div className={styles.statCard}>
             <div className={styles.label}>Starting GPA</div>
-            <div className={styles.value}>{startingGpa.toFixed(2)}</div>
+            <div className={styles.value}>{round2dp(startingGpa).toFixed(2)}</div>
             <div className={styles.sub}>{startingLabel}</div>
           </div>
           <div className={styles.statCard}>
             <div className={styles.label}>Current GPA</div>
-            <div className={styles.value}>{currentGpa.toFixed(2)}</div>
+            <div className={styles.value}>{round2dp(currentGpa).toFixed(2)}</div>
             <div className={styles.sub}>{currentLabel}</div>
           </div>
           <div className={styles.statCard}>
@@ -781,7 +786,7 @@ const GPATracker = () => {
             <div className={styles.value}>
               {percentageGrowth >= 0 ? '+' : ''}{percentageGrowth.toFixed(1)}%
               <span className={styles.absoluteGrowth}>
-                ({absoluteGrowth >= 0 ? '+' : ''}{absoluteGrowth.toFixed(2)})
+                ({absoluteGrowth >= 0 ? '+' : ''}{round2dp(absoluteGrowth).toFixed(2)})
               </span>
             </div>
             <div className={styles.sub}>Over {yearSpan} {yearSpan === 1 ? 'year' : 'years'}</div>
@@ -887,11 +892,11 @@ const GPATracker = () => {
                   <div className={styles.gpaRow}>
                     <div className={styles.gpaItem}>
                       <span className={styles.gpaLabel}>Term GPA</span>
-                      <span className={styles.gpaValue}>{semesterModalData.term_gpa ? capGPA(semesterModalData.term_gpa).toFixed(2) : 'N/A'}</span>
+                      <span className={styles.gpaValue}>{semesterModalData.term_gpa ? round2dp(capGPA(semesterModalData.term_gpa)).toFixed(2) : 'N/A'}</span>
                     </div>
                     <div className={styles.gpaItem}>
                       <span className={styles.gpaLabel}>Cumulative GPA</span>
-                      <span className={styles.gpaValue}>{capGPA(semesterModalData.gpa).toFixed(2)}</span>
+                      <span className={styles.gpaValue}>{round2dp(capGPA(semesterModalData.gpa)).toFixed(2)}</span>
                     </div>
                   </div>
                   {semesterModalData.courses && semesterModalData.courses.length > 0 && (

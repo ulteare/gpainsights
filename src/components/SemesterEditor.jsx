@@ -17,6 +17,11 @@ export const SemesterEditor = ({
 }) => {
   const [draggedSemesterIndex, setDraggedSemesterIndex] = useState(null);
 
+  // Helper function to round to 2 decimal places (conventional rounding, not banker's rounding)
+  const round2dp = (num) => {
+    return Math.round(num * 100) / 100;
+  };
+
   const calculateCumulativeStats = (chartData) => {
     let totalGradePoints = 0;
     let totalUnits = 0;
@@ -170,7 +175,7 @@ export const SemesterEditor = ({
         <div className={styles.statsPreview}>
           <div className={styles.statItem}>
             <span>Cumulative GPA:</span>
-            <strong>{calculateCumulativeStats(semestersData).gpa.toFixed(2)}</strong>
+            <strong>{round2dp(calculateCumulativeStats(semestersData).gpa).toFixed(2)}</strong>
           </div>
           <div className={styles.statItem}>
             <span>Units Earned:</span>
@@ -238,14 +243,14 @@ export const SemesterEditor = ({
                   <div className={styles.gpaItem}>
                     <label>Term GPA</label>
                     <span className={styles.gpaValue}>
-                      {(semester.term_gpa || semester.gpa || 0).toFixed(2)}
+                      {round2dp(semester.term_gpa || semester.gpa || 0).toFixed(2)}
                     </span>
                   </div>
                 )}
                 <div className={styles.gpaItem}>
                   <label>Cumulative GPA</label>
                   <span className={styles.gpaValue}>
-                    {(semester.cumulative_gpa || semester.gpa || 0).toFixed(2)}
+                    {round2dp(semester.cumulative_gpa || semester.gpa || 0).toFixed(2)}
                   </span>
                 </div>
               </div>
